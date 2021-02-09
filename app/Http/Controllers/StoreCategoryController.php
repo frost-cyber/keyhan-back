@@ -82,7 +82,7 @@ class StoreCategoryController extends Controller {
 		}
 		
 		$category->name = $data[ 'name' ];
-		$category->slug = Str::slug( $data[ 'slug' ] );
+		$category->slug = \Str::slug( $data[ 'slug' ] );
 		$category->parent_id = $data[ 'parent_id' ] ?? NULL;
 		$category->type = Category::TYPE_STORE;
 		$category->save();
