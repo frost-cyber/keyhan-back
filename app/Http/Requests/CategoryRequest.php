@@ -13,7 +13,7 @@ class CategoryRequest extends FormRequest {
 	 * @return bool
 	 */
 	public function authorize () : bool {
-		return FALSE;
+		return TRUE;
 	}
 	
 	/**
@@ -22,8 +22,21 @@ class CategoryRequest extends FormRequest {
 	 * @return array
 	 */
 	public function rules () : array {
-		return [//
+		return [
+		 'name'      => 'required|min:2|max:20' ,
+		 'slug'      => 'required|min:2|max:20|unique:categories' ,
+		 'parent_id' => 'nullable|integer|min:1' ,
 		];
+	}
+	
+	public function validationData () {
+		$data = $this->all();
+		
+		if ( isset( $data[ 'slug' ] ) ) {
+			$data[ 'slug' ] = \Str::Slug( $data[ 'slug' ] );
+		}
+		
+		return $data;
 	}
 	
 }
