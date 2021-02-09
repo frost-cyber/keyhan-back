@@ -14,7 +14,7 @@ class StoreCategoryController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index () {
-		//
+		return Category::whereType( Category::TYPE_STORE )->get();
 	}
 	
 	/**
@@ -39,7 +39,7 @@ class StoreCategoryController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show ( Category $category ) {
-		//
+		return $category;
 	}
 	
 	/**
@@ -67,7 +67,12 @@ class StoreCategoryController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy ( Category $category ) {
-		//
+		$category->delete();
+		
+		return \response( [
+		 'message'  => 'Delete Category Successfully' ,
+		 'category' => $category ,
+		] , 200 );
 	}
 	
 	protected function save ( array $data , Category $category = NULL ) {
