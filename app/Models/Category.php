@@ -14,4 +14,12 @@ class Category extends Model {
 	
 	public $timestamps = FALSE;
 	
+	public function children () {
+		return $this->hasMany( Category::class , 'parent_id' );
+	}
+	
+	public function parent () {
+		return $this->belongsTo( Category::class , 'parent_id' );
+	}
+	
 }
