@@ -9,4 +9,9 @@ class Category extends Model {
 	
 	use HasFactory;
 	
+	const TYPE_STORE = 1;
+	const TYPE_BLOG = 2;
+	
+	public $timestamps = FALSE;
+	
 }
