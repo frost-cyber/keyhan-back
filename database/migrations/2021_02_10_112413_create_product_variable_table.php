@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductVariablesTable extends Migration {
+class CreateProductVariableTable extends Migration {
 	
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateProductVariablesTable extends Migration {
 	 * @return void
 	 */
 	public function up () {
-		Schema::create( 'product_variables' , function( Blueprint $table ) {
+		Schema::create( 'product_variable' , function( Blueprint $table ) {
 			$table->increments( 'id' );
 			$table->foreignId( 'product_id' );
 			$table->foreignId( 'variable_id' )->nullable();
