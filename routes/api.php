@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\StoreCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,3 +17,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('categories' , StoreCategoryController::class);
+Route::apiResource('attributes' , AttributeController::class);
