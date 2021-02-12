@@ -38,7 +38,7 @@ class CreateProductVariableTable extends Migration {
 	 * @return void
 	 */
 	public function down () {
-		Schema::dropIfExists( 'product_variables' );
+		Schema::dropIfExists( 'product_variable' );
 	}
 	
 }
