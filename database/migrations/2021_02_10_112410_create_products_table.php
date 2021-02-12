@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration {
 			$table->text( 'description' );
 			$table->longText( 'review' );
 			$table->longText( 'default_data' )->nullable();
-			$table->text( 'extra' )->nullable();
+			$table->text( 'extra_data' )->nullable();
 			$table->boolean( 'is_downloadable' )->default( FALSE );
 			$table->bigInteger( 'brand_id' )->nullable();
 		} );

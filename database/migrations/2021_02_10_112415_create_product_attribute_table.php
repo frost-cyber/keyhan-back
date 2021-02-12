@@ -22,8 +22,8 @@ class CreateProductAttributeTable extends Migration {
 			$table->integer( 'number' );
 			
 			$table->foreign( 'product_id' )->references( 'id' )->on( 'products' )->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreign( 'property_id' )->references( 'id' )->on( 'products' )->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreign( 'property_value_id' )->references( 'id' )->on( 'products' )->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreign( 'property_id' )->references( 'id' )->on( 'attributes' )->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreign( 'property_value_id' )->references( 'id' )->on( 'attribute_values' )->cascadeOnDelete()->cascadeOnUpdate();
 		} );
 	}
 	

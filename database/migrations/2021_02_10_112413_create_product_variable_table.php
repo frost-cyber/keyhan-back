@@ -27,8 +27,8 @@ class CreateProductVariableTable extends Migration {
 			$table->string( 'unit' )->nullable();
 			
 			$table->foreign( 'product_id' )->references( 'id' )->on( 'products' )->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreign( 'variable_id' )->references( 'id' )->on( 'products' )->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreign( 'variable_value_id' )->references( 'id' )->on( 'products' )->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreign( 'variable_id' )->references( 'id' )->on( 'attributes' )->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreign( 'variable_value_id' )->references( 'id' )->on( 'attribute_values' )->cascadeOnDelete()->cascadeOnUpdate();
 		} );
 	}
 	
