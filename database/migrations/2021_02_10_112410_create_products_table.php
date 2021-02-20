@@ -14,16 +14,21 @@ class CreateProductsTable extends Migration {
 	public function up () {
 		Schema::create( 'products' , function( Blueprint $table ) {
 			$table->id();
+			$table->foreignId( 'brand_id' )->nullable();
+			
 			$table->string( 'name' );
 			$table->string( 'slug' )->unique();
 			$table->string( 'sku' )->unique()->comment( "کد محصول" );
 			$table->text( 'short_review' );
 			$table->text( 'description' );
 			$table->longText( 'review' );
-			$table->longText( 'default_data' )->nullable();
-			$table->text( 'extra_data' )->nullable();
-			$table->boolean( 'is_downloadable' )->default( FALSE );
-			$table->bigInteger( 'brand_id' )->nullable();
+			$table->boolean( 'is_virtual' )->default(FALSE);
+			$table->longText( 'extra_data' )->nullable();
+			$table->longText( 'default_data' )->nullable()->comment( "اطلاعات پیشفرض محصول جهت لود سریعتر محصول" );
+			$table->timestamps();
+			$table->softDeletes();
+			
+			$table->foreign('brand_id')->references('id')->on('brands')->nullOnDelete()->cascadeOnUpdate();
 		} );
 	}
 	

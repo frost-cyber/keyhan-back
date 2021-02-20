@@ -24,9 +24,9 @@ class AttributeRequest extends FormRequest {
 	 */
 	public function rules () {
 		$roles = [
-		 'name' => 'required',
-		 'is_variable' => 'required|boolean',
-		 'values' => 'required|array',
+		 'name'        => 'required' ,
+		 'is_variable' => 'required|boolean' ,
+		 'values'      => 'required|array' ,
 		];
 		
 		$roles[ 'type' ] = [
@@ -34,18 +34,18 @@ class AttributeRequest extends FormRequest {
 		 Rule::in( [ Attribute::TYPE_SIMPLE , Attribute::TYPE_COLOR , Attribute::TYPE_UNIT ] ) ,
 		];
 		
-		if ($this->has('type')){
-			switch ($this->input('type')){
+		if ( $this->has( 'type' ) ) {
+			switch ( $this->input( 'type' ) ) {
 				case Attribute::TYPE_SIMPLE:
-					$roles['values.*.value'] = 'required' ;
+					$roles[ 'values.*.value' ] = 'required';
 					break;
 				case Attribute::TYPE_COLOR:
-					$roles['values.*.name'] = 'required';
-					$roles['values.*.code'] = 'required';
+					$roles[ 'values.*.name' ] = 'required';
+					$roles[ 'values.*.code' ] = 'required';
 					break;
 				case Attribute::TYPE_UNIT:
-					$roles['values.*.value'] = 'required' ;
-					$roles['unit'] = 'required' ;
+					$roles[ 'values.*.value' ] = 'required';
+					$roles[ 'unit' ] = 'required';
 					break;
 			}
 		}

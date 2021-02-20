@@ -12,7 +12,7 @@ class AttributeValue extends Model {
 	public $timestamps = FALSE;
 	
 	protected $appends = [
-	 'code' ,
+	 'code' , 'name',
 	];
 	
 	protected $hidden = [
@@ -39,7 +39,7 @@ class AttributeValue extends Model {
 	}
 	
 	protected function ExtraDataGet ( $key ) {
-		return $this->extra_data[ $key ]??NULL;
+		return $this->extra_data[ $key ] ?? NULL;
 	}
 	
 	protected function getCodeAttribute () {
@@ -48,6 +48,10 @@ class AttributeValue extends Model {
 	
 	protected function setCodeAttribute ( $val ) {
 		$this->ExtraDataSet( 'code' , $val );
+	}
+	
+	public function getNameAttribute(){
+		return $this->attribute->name;
 	}
 	
 }

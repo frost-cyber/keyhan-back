@@ -13,7 +13,7 @@ class CreateProductVariableTable extends Migration {
 	 */
 	public function up () {
 		Schema::create( 'product_variable' , function( Blueprint $table ) {
-			$table->increments( 'id' );
+			$table->id();
 			$table->foreignId( 'product_id' );
 			$table->foreignId( 'variable_id' )->nullable();
 			$table->foreignId( 'variable_value_id' )->nullable();
