@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest {
-	
+
 	/**
 	 * Determine if the user is authorized to make this request.
 	 *
@@ -15,28 +15,40 @@ class CategoryRequest extends FormRequest {
 	public function authorize () : bool {
 		return TRUE;
 	}
-	
+
 	/**
 	 * Get the validation rules that apply to the request.
 	 *
 	 * @return array
 	 */
 	public function rules () : array {
-		return [
+		$rules = [
 		 'name'      => 'required|min:2|max:20' ,
-		 'slug'      => 'required|min:2|max:20|unique:categories' ,
+		 'slug'      => ['required','min:2','max:20','unique:categories'],
 		 'parent_id' => 'nullable|integer|min:1' ,
 		];
+
+		if ($this->route('category')){
+		    $rules['slug'][3]='unique:categories,slug,'.$this->route('category')->id;
+        }
+
+		return $rules;
 	}
-	
+
 	public function validationData () {
 		$data = $this->all();
-		
+
 		if ( isset( $data[ 'slug' ] ) ) {
 			$data[ 'slug' ] = \Str::Slug( $data[ 'slug' ] );
 		}
-		
+
 		return $data;
 	}
-	
+
+	public function attributes(){
+	    return [
+	        'slug' => 'نامک'
+        ];
+    }
+
 }

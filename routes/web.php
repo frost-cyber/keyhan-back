@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('testsms' , [\App\Http\Controllers\Auth\RegisterController::class , 'sendVerifyCode']);
+
+Route::post('login' , [\App\Http\Controllers\Auth\LoginController::class , 'login']);

@@ -8,12 +8,16 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "laravel-lang/lang": "~8.0",
         "laravel/framework": "^8.12",
-        "laravel/tinker": "^2.5"
+        "laravel/sanctum": "^2.9",
+        "laravel/tinker": "^2.5",
+        "spatie/laravel-permission": "^4.0",
+        "tzsk/sms": "^5.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.9",

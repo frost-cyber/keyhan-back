@@ -5,139 +5,116 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AttributeRequest;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
-use Illuminate\Http\Request;
-use function React\Promise\all;
+use Illuminate\Database\Eloquent\Collection;
+use JetBrains\PhpStorm\ArrayShape;
 
-class AttributeController extends Controller {
-	
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index () {
-		return Attribute::with( 'values' )->get();
-	}
-	
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param AttributeRequest $request
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store ( AttributeRequest $request ) {
-		return [
-		 'message'    => 'Create Attribute Successfully' ,
-		 'attribuite' => $this->saveAttribute( $request->all() ) ,
-		];
-	}
-	
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param Attribute $attribute
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show ( Attribute $attribute ) {
-		return $attribute->load( 'values' );
-	}
-	
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param AttributeRequest $request
-	 * @param Attribute $attribute
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update ( AttributeRequest $request , Attribute $attribute ) {
-		return [
-		 'message'    => 'Update Attribute Successfully' ,
-		 'attribuite' => $this->saveAttribute( $request->all() , $attribute ) ,
-		];
-	}
-	
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param Attribute $attribute
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy ( Attribute $attribute ) {
-		$attribute = $attribute->load('values');
-		$attribute->delete();
-		
-		return [
-		 'message'    => 'Delete Attribute Successfully' ,
-		 'attribuite' => $attribute ,
-		];
-	}
-	
-	public function saveAttribute ( array $data , Attribute $attribute = NULL ) {
-		//If Create Attribute
-		if ( $attribute == NULL ) {
-			$attribute = new Attribute();
-			
-			$attribute->name = $data[ 'name' ];
-			$attribute->type = $data[ 'type' ];
-			$attribute->is_variable = $data[ 'is_variable' ];
-			
-			switch ( $data[ 'type' ] ) {
-				case Attribute::TYPE_SIMPLE:
-					break;
-				case Attribute::TYPE_COLOR:
-					break;
-				case Attribute::TYPE_UNIT:
-					$attribute->unit = $data[ 'unit' ];
-					break;
-			}
-			
-		} else {
-		
-		}
-		
-		$attribute->save();
-		$this->saveAttribiteValues( $data[ 'values' ] , $attribute );
-		
-		return $attribute->load( 'values' );
-	}
-	
-	protected function saveAttribiteValues ( array $values , Attribute $attribute ) {
-		foreach ( $values as $value ) {
-			
-			$attributeValue = new AttributeValue();
-			$attributeValue->attribute_id = $attribute->id;
-			
-			$this->saveAttribiteValue( $value , $attributeValue , $attribute );
-		}
-	}
-	
-	protected function saveAttribiteValue ( array $value , AttributeValue $attributeValue , Attribute $attribute ) {
-		
-		switch ( $attribute->type ) {
-			
-			case Attribute::TYPE_SIMPLE:
-				$attributeValue->value = $value[ 'value' ];
-				break;
-			
-			case Attribute::TYPE_COLOR:
-				$attributeValue->value = $value[ 'name' ];
-				$attributeValue->code = $value[ 'code' ];
-				
-				break;
-			
-			case Attribute::TYPE_UNIT:
-				$attributeValue->value = $value[ 'value' ];
-				break;
-			
-		}
-		
-		$attributeValue->save();
-		
-		return $attributeValue;
-	}
-	
+class AttributeController extends Controller
+{
+    public function index(): Collection|array
+    {
+        return Attribute::all();
+    }
+
+    #[ArrayShape(['message' => "string" , 'attribute' => "\App\Models\Attribute|null"])]
+    public function store(AttributeRequest $request): array
+    {
+        return [
+            'message'   => 'Create Attribute Successfully' ,
+            'attribute' => $this->saveAttribute($request->all()) ,
+        ];
+    }
+
+    public function show(Attribute $attribute): Attribute
+    {
+        return $attribute->load('values');
+    }
+
+    #[ArrayShape(['message' => "string" , 'attribute' => "\App\Models\Attribute|null"])]
+    public function update(AttributeRequest $request , Attribute $attribute): array
+    {
+        return [
+            'message'   => 'Update Attribute Successfully' ,
+            'attribute' => $this->saveAttribute($request->all() , $attribute) ,
+        ];
+    }
+
+    #[ArrayShape(['message' => "string" , 'attribute' => "\App\Models\Attribute"])]
+    public function destroy(AttributeRequest $request , Attribute $attribute): array
+    {
+
+        if (!$request->has("values")) {
+            $attribute->delete();
+        } else {
+            $attribute = $attribute->load('values');
+            $this->deleteAttributeValues($attribute , $request->input('value'));
+            $attribute->refresh();
+        }
+
+        return [
+            'message'   => 'Delete Attribute Successfully' ,
+            'attribute' => $attribute ,
+        ];
+    }
+
+    protected function saveAttribute(array $data , Attribute $attribute = NULL): ?Attribute
+    {
+        //If Create Attribute
+        if ($attribute == NULL) {
+            $attribute = new Attribute();
+        }
+        $attribute->name = $data['name'];
+        $attribute->type = $data['type'];
+        $attribute->is_variable = $data['is_variable'];
+        $attribute->save();
+
+        $this->saveAttributeValues($data['values'] , $attribute);
+
+        return $attribute;
+    }
+
+    protected function saveAttributeValues(array $values , Attribute $attribute): Attribute
+    {
+        $requestIds = collect($values)->pluck('id')->filter(fn($val) => (int)$val)->toArray();
+        $deleteValues = array_diff($attribute->values->modelKeys() , $requestIds);
+        $this->deleteAttributeValues($attribute , $deleteValues);
+
+        foreach ($values as $value) {
+            if (!isset($value['id']) || in_array($value['id'] , ['' , NULL])) {
+                $attributeValue = new AttributeValue();
+                $attributeValue->attribute_id = $attribute->id;
+            } else {
+                $attributeValue = $attribute->values->find($value['id']);
+            }
+            $this->saveAttributeValue($value , $attributeValue , $attribute);
+        }
+        $attribute->refresh();
+        return $attribute;
+    }
+
+    protected function deleteAttributeValues(Attribute $attribute , ...$ids)
+    {
+        !is_array($ids[0]) ?: $ids = $ids[0];
+        $attribute->values()->whereIn("id" , $ids)->delete();
+    }
+
+    protected function saveAttributeValue(array $value , AttributeValue $attributeValue , Attribute $attribute): AttributeValue
+    {
+        switch ($attribute->type) {
+            case Attribute::TYPE_SIMPLE:
+                $attributeValue->value = $value['value'];
+                break;
+            case Attribute::TYPE_COLOR:
+                $attributeValue->value = $value['value'];
+                $attributeValue->code = $value['code'];
+                break;
+            case Attribute::TYPE_UNIT:
+                $attributeValue->value = $value['value'];
+                $attributeValue->unit = $value['unit'];
+                break;
+        }
+        $attributeValue->save();
+
+        return $attributeValue;
+    }
+
 }
