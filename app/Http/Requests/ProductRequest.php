@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductRequest extends FormRequest {
-	
+
 	/**
 	 * Determine if the user is authorized to make this request.
 	 *
@@ -14,7 +14,7 @@ class ProductRequest extends FormRequest {
 	public function authorize () {
 		return TRUE;
 	}
-	
+
 	/**
 	 * Get the validation rules that apply to the request.
 	 *
@@ -31,8 +31,8 @@ class ProductRequest extends FormRequest {
 		 'is_virtual'                    => 'required|boolean' ,
 		 'brand_id'                      => 'nullable|integer|min:1' ,
 		 'attributes'                    => 'required|array' ,
-		 'attribures.*.id'               => 'required|integer|min:1' ,
-		 'attribures.*.group_name'       => 'nullable' ,
+		 'attributes.*.id'               => 'required|integer|min:1' ,
+		 'attributes.*.group_name'       => 'nullable' ,
 		 'variables'                     => 'required|array' ,
 		 'variables.*.id'                => 'nullable|integer|min:1' ,
 		 'variables.*.purchase_price'    => 'nullable|integer|min:1' ,
@@ -42,18 +42,13 @@ class ProductRequest extends FormRequest {
 		 'variables.*.minimum_wholesale' => 'nullable|integer|min:1' ,
 		 'variables.*.inventory'         => 'required|integer|min:0' ,
 		];
-		
 		return $rules;
 	}
-	
 	public function validationData () {
 		$data = $this->all();
-		
 		if ( $this->has( 'slug' ) ) {
 			$data[ 'slug' ] = \Str::slug( $data[ 'slug' ] );
 		}
-		
 		return $data;
 	}
-	
 }
