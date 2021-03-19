@@ -15,7 +15,7 @@ class StoreCategoryController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $query = Category::query()->whereType(Category::TYPE_STORE);
 
