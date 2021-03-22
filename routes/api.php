@@ -33,3 +33,8 @@ Route::apiResource('categories' , StoreCategoryController::class);
 Route::apiResource('attributes' , AttributeController::class);
 Route::apiResource('products' , ProductController::class);
 Route::apiResource('brands' , BrandController::class);
+
+
+Route::group(['prefix' => 'files'] , function(){
+    Route::post('upload' , [\App\Http\Controllers\FileController::class , 'upload']);
+});
