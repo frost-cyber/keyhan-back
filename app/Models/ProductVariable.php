@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Model;
 
-class ProductVariable extends Pivot {
-	
+class ProductVariable extends Model {
+
 	protected $fillable = [
+    'variable_id',
+    'variable_value_id',
 	 'purchase_price' ,
 	 'selling_price' ,
 	 'discounted_price' ,
@@ -14,5 +16,10 @@ class ProductVariable extends Pivot {
 	 'minimum_wholesale' ,
 	 'inventory' ,
 	];
-	
+    protected $table = 'product_variable';
+
+     public $timestamps = false;
+	public function variable(){
+	    return $this->belongsTo(AttributeValue::class , 'variable_value_id');
+    }
 }
