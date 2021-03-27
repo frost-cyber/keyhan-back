@@ -101,6 +101,8 @@ class ProductController extends Controller {
 
 		$product->save();
 
+		$this->syncCategories($data['categories']  , $product);
+		$this->syncImages($data['images']  , $product);
 		$this->syncAttributes( $data[ 'attributes' ] , $product );
 		$this->syncVariables( $data[ 'variables' ] , $product );
 
@@ -108,6 +110,17 @@ class ProductController extends Controller {
 
 		return $product;
 	}
+
+	protected function syncCategories(array $categories , Product $product){
+	    $product->categories()->sync($categories);
+    }
+	protected function syncImages(array $imagesData , Product $product){
+	    $ids=[];
+	    foreach ($imagesData as $image){
+	        $ids[] = $image['file_id'];
+        }
+	    $product->files()->sync($ids);
+    }
 
 	protected function syncAttributes ( array $attributesData , Product $product ) {
 		$syncData = [];
@@ -130,8 +143,14 @@ class ProductController extends Controller {
 	protected function syncVariables ( array $variablesData , Product $product ) {
 		$issetVariables=[];
 
+        foreach ( $variablesData as $index => $variableData ) {
+            if ($variableData['id']??false){
+                $issetVariables[]=$variableData['id'];
+            }
+        }
+        $product->variables()->whereNotIn('id' , $issetVariables)->delete();
 		foreach ( $variablesData as $index => $variableData ) {
-			$variableValue = AttributeValue::find( $variableData[ 'variable_id' ]??0 );
+			$variableValue = AttributeValue::find( $variableData[ 'variable_value_id' ]??0 );
 
             $syncData = [
                 'purchase_price'    => $variableData[ 'purchase_price' ] ?? NULL ,
@@ -151,12 +170,12 @@ class ProductController extends Controller {
                 $issetVariables[]=$variableData['id'];
 
                 $product->variables->find($variableData['id'])->update($syncData);
+            }else{
+                $product->variables()->create($syncData);
             }
 
-            $product->variables()->create($syncData);
 		}
 
-		$product->variables()->whereNotIn('id' , $issetVariables)->delete();
 
 	}
 }
