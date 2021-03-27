@@ -34,4 +34,5 @@ class Article extends Model
     public function categories(){
         return $this->morphToMany(Category::class,'categorizable' , 'categorizables');
     }
+
 }

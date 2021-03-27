@@ -33,4 +33,5 @@ Route::apiResource('articleCategories' , \App\Http\Controllers\ArticleCategoryCo
 Route::apiResource('attributes' , AttributeController::class);
 Route::apiResource('products' , ProductController::class);
 Route::apiResource('brands' , BrandController::class);
+Route::get('tags','ArticleController@tags');
 Route::apiResource('articles',\App\Http\Controllers\ArticleController::class);

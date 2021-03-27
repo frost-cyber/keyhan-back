@@ -10,7 +10,7 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $articles=Article::with(['file','category'])->get();
+        $articles=Article::with(['files','categories'])->get();
         return $articles->toJson();
     }
 
@@ -18,12 +18,9 @@ class ArticleController extends Controller
     {
         $request->validate([
             'title' => 'required|min:5',
-            'body' => 'required',
             'description' => 'required',
             'slug' => 'required|unique:articles',
             'tags' => 'required',
-            'category_id' => 'required|integer',
-            'image_id' => 'required|integer',
             'status' => 'required|in:active,deactive'
         ]);
         $this->save($request->all(),new Article());
@@ -31,7 +28,7 @@ class ArticleController extends Controller
     }
 
     public function show(Article $article){
-        return $article->load('')->append(['thumbnail']);
+        return $article->load('categories')->append(['thumbnail']);
     }
 
     public function update(Request $request, Article $article)
@@ -41,10 +38,8 @@ class ArticleController extends Controller
             'title' => 'required|min:5',
             'body' => 'required',
             'description' => 'required',
-            'slug' => 'required|unique:articles',
+            'slug' => 'required|unique:articles,slug,'.$article->id,
             'tags' => 'required',
-            'category_id' => 'required|integer',
-            'image_id' => 'required|integer',
             'status' => 'required|in:active,deactive'
         ]);
         $this->save($request->all(), $article);
@@ -67,9 +62,8 @@ class ArticleController extends Controller
         $article->status = $data['status'];
         $article->comments_count = $data['comments_count'] ?? $article->comments_count ?? 0;
         $article->save();
-
-        $article->categories()->sync($data['category_id']);
-        $article->files()->sync($data['image_id'] , ['default' => true , 'description' => 'Thumbnail' , 'number' => 0]);
+        $article->categories()->sync($data['categories']['id']);
+//        $article->files()->sync($data['image_id'] , ['default' => true , 'description' => 'Thumbnail' , 'number' => 0]);
 
         return $article;
     }
