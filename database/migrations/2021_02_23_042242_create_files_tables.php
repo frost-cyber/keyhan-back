@@ -26,7 +26,7 @@ class CreateFilesTables extends Migration
 
         Schema::create('fileables' , function (Blueprint $table) {
             $table->foreignId('file_id');
-            $table->foreign('file_id')->references('id')->on('files')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('file_id')->references('id')->on('files')->cascadeOnDelete()->cascadeOnUpdate();
             $table->morphs("fileable");
             $table->boolean("default")->default(FALSE);
             $table->integer("number")->nullable();

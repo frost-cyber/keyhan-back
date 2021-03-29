@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class File extends Model
 {
     use HasFactory;
+    protected $fillable=[
+        'link',
+
+    ];
+    public function articles(){
+        return $this->hasMany(Article::class);
+    }
 }

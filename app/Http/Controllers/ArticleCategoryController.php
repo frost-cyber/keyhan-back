@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class StoreCategoryController extends Controller
-{
-
-    /**
-     * Display a listing of the resource.
-     * @return Response
-     */
+class ArticleCategoryController extends Controller
+{ /**
+ * Display a listing of the resource.
+ * @return Response
+ */
     public function index(Request $request)
     {
-        $query = Category::query()->whereType(Category::TYPE_STORE);
+        $query = Category::query()->whereType(Category::TYPE_BLOG);
 
         if (!$request->has('with_children')) {
             $query = $query->without('children');
@@ -57,7 +55,7 @@ class StoreCategoryController extends Controller
         $category->name = $data['name'];
         $category->slug = \Str::slug($data['slug']);
         $category->parent_id = $data['parent_id'] ?? NULL;
-        $category->type = Category::TYPE_STORE;
+        $category->type = Category::TYPE_BLOG;
         $category->save();
 
         return $category;
@@ -102,5 +100,4 @@ class StoreCategoryController extends Controller
             'category' => $category ,
         ] , 200);
     }
-
 }

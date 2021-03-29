@@ -29,10 +29,12 @@ Route::get('user' , function(){
 })->middleware('auth:sanctum');
 
 Route::apiResource('categories' , StoreCategoryController::class);
-
+Route::apiResource('articleCategories' , \App\Http\Controllers\ArticleCategoryController::class)->parameters(['articleCategories' => 'category']);
 Route::apiResource('attributes' , AttributeController::class);
 Route::apiResource('products' , ProductController::class);
 Route::apiResource('brands' , BrandController::class);
+Route::get('tags','ArticleController@tags');
+Route::apiResource('articles',\App\Http\Controllers\ArticleController::class);
 
 
 Route::group(['prefix' => 'files'] , function(){
