@@ -19,7 +19,7 @@ class LoginController extends Controller
 
         if ($this->username() === 'mobile') {
             $this->validationRules['username'][] = 'regex:/^9\d{9}$/i';
-            $this->validationCustomMessage['username.regex'] = 'موبایل باید با فرمت (9##-###-##-##) باشد.';
+            $this->validationCustomMessage['username.regex'] = 'موبایل باید با فرمت (--.--.---.---9) باشد.';
             $this->validationAttributes['username'] = 'موبایل';
         } else {
             $this->validationRules['username'][] = 'email';
