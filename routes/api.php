@@ -34,7 +34,7 @@ Route::apiResource('attributes' , AttributeController::class);
 Route::apiResource('products' , ProductController::class);
 Route::apiResource('brands' , BrandController::class);
 Route::get('tags','ArticleController@tags');
-Route::apiResource('articles',\App\Http\Controllers\ArticleController::class);
+Route::apiResource('articles',\App\Http\Controllers\ArticleController::class)->scoped(['article' =>'slug']);
 
 
 Route::group(['prefix' => 'files'] , function(){

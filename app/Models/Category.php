@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model {
 
 	use HasFactory;
-	protected $with = ['children'];
+	protected $with = ['parent'];
 	const TYPE_STORE = 1;
 	const TYPE_BLOG = 2;
 
