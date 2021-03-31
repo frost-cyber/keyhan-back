@@ -5,14 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
-
+use Illuminate\Database\Eloquent\Builder;
 class ArticleController extends Controller
 {
+
     public function index()
     {
-        $articles=Article::with(['files','categories'])->get();
-        return $articles->toJson();
+        $articles = Article::with(['files','categories']);
+        if (\request()->has('category')){
+            $articles = $articles->whereHas('categories',function (Builder $query){
+                $query->where('id',\request('category'));
+            } );
+        }
+        $articles=$articles->get();
+        return $articles;
     }
+
 
     public function store(Request $request)
     {
@@ -63,7 +71,7 @@ class ArticleController extends Controller
         $article->comments_count = $data['comments_count'] ?? $article->comments_count ?? 0;
         $article->save();
         $article->categories()->sync($data['categories']['id']);
-//        $article->files()->sync($data['image_id'] , ['default' => true , 'description' => 'Thumbnail' , 'number' => 0]);
+        $article->files()->sync($data['thumbnail'] ['id'], ['default' => true , 'description' => 'Thumbnail' , 'number' => 0]);
 
         return $article;
     }

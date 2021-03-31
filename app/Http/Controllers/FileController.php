@@ -65,7 +65,13 @@ class FileController extends Controller
 
     private function setupArticleThumbnailUpload()
     {
+        $this->rules = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+        ];
 
+        $this->uploadOptoins['path'] = '/article/images';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
     }
 
     private function SetupUpload(UploadedFile $file , string $for){
@@ -78,6 +84,7 @@ class FileController extends Controller
         $methods = [
             'ProductImage',
             'EditorImage',
+            'ArticleThumbnail'
         ];
 
         if (!in_array($for , $methods)){

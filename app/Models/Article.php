@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
     use HasFactory;
+    protected $appends=['thumbnail'];
     protected $fillable=[
         'title',
         'body',
@@ -25,7 +26,7 @@ class Article extends Model
     protected $table = 'articles';
 
     public function getThumbnailAttribute(){
-        return $this->files??[0];
+        return $this->files[0]??[];
     }
 
     public  function files(){
