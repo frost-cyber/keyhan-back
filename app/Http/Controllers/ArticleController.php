@@ -29,7 +29,9 @@ class ArticleController extends Controller
             'description' => 'required',
             'slug' => 'required|unique:articles',
             'tags' => 'required',
-            'status' => 'required|in:active,deactive'
+            'status' => 'required|in:active,deactive',
+            'thumbnail'=> 'required|array',
+            'thumbnail.id'=>'required|int|exist:files,id'
         ]);
         $this->save($request->all(),new Article());
         return response('create successfully','200');
@@ -48,7 +50,9 @@ class ArticleController extends Controller
             'description' => 'required',
             'slug' => 'required|unique:articles,slug,'.$article->id,
             'tags' => 'required',
-            'status' => 'required|in:active,deactive'
+            'status' => 'required|in:active,deactive',
+            'thumbnail'=> 'required|array',
+            'thumbnail.id'=>'required|int|exist:files,id'
         ]);
         $this->save($request->all(), $article);
         return response('update article successfully', 200);
@@ -71,7 +75,13 @@ class ArticleController extends Controller
         $article->comments_count = $data['comments_count'] ?? $article->comments_count ?? 0;
         $article->save();
         $article->categories()->sync($data['categories']['id']);
-        $article->files()->sync($data['thumbnail'] ['id'], ['default' => true , 'description' => 'Thumbnail' , 'number' => 0]);
+        if ($data['thumbnail']){
+            $article->files()->sync($data['thumbnail'] ['id'], ['default' => true , 'description' => 'Thumbnail' , 'number' => 0]);
+        }
+        else{
+            $article->files()->delete();
+
+        }
 
         return $article;
     }

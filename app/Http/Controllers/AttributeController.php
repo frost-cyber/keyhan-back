@@ -10,7 +10,7 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class AttributeController extends Controller
 {
-    public function index(): Collection|array
+    public function index()
     {
         return Attribute::all();
     }

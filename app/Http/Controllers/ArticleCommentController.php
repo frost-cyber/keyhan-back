@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
-class CommentController extends Controller
+class ArticleCommentController extends Controller
 {
 
     public function index()
     {
-            $comments = Comment::all()->where('commentable_type','article');
-             return  $comments->toJson();
+        $comments = Comment::where('commentable_type', 'App\Models\Article')->get();
+        return $comments->toJson();
     }
 
 
@@ -49,5 +49,12 @@ class CommentController extends Controller
     {
         $comment->delete();
         return response('delete successfully', 200);
+    }
+
+    public function toggleConfirm(Comment $comment)
+    {
+        $comment->confirmed = !$comment->confirmed;
+        $comment->save();
+        return $comment;
     }
 }

@@ -100,4 +100,8 @@ class ArticleCategoryController extends Controller
             'category' => $category ,
         ] , 200);
     }
+    public function categoryArticle(){
+                $categoriesArticle=Category::limit(5)->get();
+                return $categoriesArticle->toJson();
+    }
 }
