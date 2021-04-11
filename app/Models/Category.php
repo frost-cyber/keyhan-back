@@ -5,23 +5,43 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model {
+class Category extends Model
+{
 
-	use HasFactory;
-	protected $with = ['parent'];
-	const TYPE_STORE = 1;
-	const TYPE_BLOG = 2;
+    use HasFactory;
 
-	public $timestamps = FALSE;
+    const TYPE_STORE = 1;
+    const TYPE_BLOG = 2;
+    const RELATIONS = [
+        'children' ,
+        'childrenRecursive' ,
+        'parent' ,
+        'parentRecursive' ,
+    ];
+    public $timestamps = FALSE;
 
-	public function children (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function childrenRecursive()
     {
-		return $this->hasMany( Category::class , 'parent_id' );
-	}
+        return $this->children()->with('childrenRecursive' ,);
+    }
 
-	public function parent () {
-		return $this->belongsTo( Category::class , 'parent_id' );
-	}
+    public function children()
+    {
+        return $this->hasMany(Category::class , 'parent_id');
+    }
 
+    public function parentRecursive()
+    {
+        return $this->parent()->with('parentRecursive' ,);
+    }
 
+    public function parent()
+    {
+        return $this->belongsTo(Category::class , 'parent_id');
+    }
+
+    public function test()
+    {
+        return 'test';
+    }
 }

@@ -19,16 +19,16 @@ class StoreCategoryController extends Controller
     {
         $query = Category::query()->whereType(Category::TYPE_STORE);
 
-        if (!$request->has('with_children')) {
-            $query = $query->without('children');
+        if ($request->has('with') && !count(array_diff($request->input('with') , Category::RELATIONS))) {
+            $query = $query->with($request->input('with'));
         }
 
-        if ($request->has('children')){
+        if ($request->has('with') && in_array('parents' , $request->input('with'))){
             $query = $query->where('parent_id' ,(int) $request->input('children'));
         }
 
         if ($request->has('parent')){
-            $query = $query->whereNull('parent_id');
+            $query = $query->where('parent_id' ,(int) $request->input('parent') ?: null);
         }
 
         return $query->get();
