@@ -12,40 +12,56 @@ use Illuminate\Database\Eloquent\Model;
  * @property boolean is_variable
  * @property int type //only [ 1 , 2 , 3 ]
  */
-class Attribute extends Model {
+class Attribute extends Model
+{
 
-	use HasFactory;
+    use HasFactory;
 
-	public $timestamps = FALSE;
+    const TYPE_SIMPLE = 1;
+    const TYPE_COLOR = 2;
+    const TYPE_UNIT = 3;
 
-	protected $hidden = [
-	 'extra_data' ,
-	];
+    public $timestamps = FALSE;
+    protected $appends = ['code' , 'unit'];
+    protected $hidden = ['extra_data' ,];
+    protected $casts = ['extra_data' => 'array'];
 
-	protected $casts = [
-	 'extra_data' => 'array' ,
-	];
-	const TYPE_SIMPLE = 1;
-	const TYPE_COLOR = 2;
-	const TYPE_UNIT = 3;
+    protected function getCodeAttribute()
+    {
+        return $this->ExtraDataGet('code');
+    }
 
-	public function values () {
-		return $this->hasMany( AttributeValue::class );
-	}
+    protected function ExtraDataGet($key)
+    {
+        return $this->extra_data[$key] ?? NULL;
+    }
 
-	protected function ExtraDataSet ( $key , $val ) {
-		if ( ! $this->extra_data ) {
-			$this->extra_data = [];
-		}
+    protected function setCodeAttribute($val)
+    {
+        $this->ExtraDataSet('code' , $val);
+    }
 
-		$data = $this->extra_data;
-		$data[ $key ] = $val;
+    protected function ExtraDataSet($key , $val)
+    {
+        if (!$this->extra_data) {
+            $this->extra_data = [];
+        }
 
-		$this->extra_data = $data;
-	}
+        $data = $this->extra_data;
+        $data[$key] = $val;
 
-	protected function ExtraDataGet ( $key ) {
-		return $this->extra_data[ $key ] ?? NULL;
-	}
+        $this->extra_data = $data;
+    }
+
+    protected function getUnitAttribute()
+    {
+        return $this->ExtraDataGet('unit');
+    }
+
+    protected function setUnitAttribute($val)
+    {
+        $this->ExtraDataSet('unit' , $val);
+    }
+
 
 }
