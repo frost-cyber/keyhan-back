@@ -3,179 +3,219 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Models\Attribute;
 use App\Models\AttributeValue;
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductVariant;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\Types\Null_;
 use Str;
 
-class ProductController extends Controller {
+class ProductController extends Controller
+{
 
-	protected $product;
+    protected $product;
 
-	public function __construct ( Product $product ) {
-		$this->product = $product;
-	}
-
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index () {
-		return Product::with( [ 'variables' , 'attributes' , 'brand' ] )->get();
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param ProductRequest $request
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store ( ProductRequest $request ) {
-		return \response( [
-		 'message'  => 'Create Product Successfully' ,
-		 'category' => $this->save( $request->all() ) ,
-		] , 200 );
-	}
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  Product $product
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show (  Product $product) {
-		return $product->load(['variables' , 'attributes' , 'brand']);
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param ProductRequest $request
-	 * @param Product $product
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update ( ProductRequest $request , Product $product ) {
-
-		return \response( [
-		 'message'  => 'Update Product Successfully' ,
-		 'category' => $this->save( $request->all() , $product ) ,
-		] , 200 );
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param int $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy ( Product $product ) {
-		$product->delete();
-
-		return \response( [
-		 'message'  => 'Delete Product Successfully' ,
-		 'category' => $product ,
-		] , 200 );
-	}
-
-	protected function save ( array $data , Product $product = NULL ) {
-		//If Create Product
-		if ( $product == NULL ) {
-			$product = new Product();
-		}
-
-		$product->name = $data[ 'name' ];
-		$product->slug = Str::slug( $data[ 'slug' ] );
-		$product->sku = $data[ 'sku' ];
-		$product->review = $data[ 'review' ];
-		$product->short_review = $data[ 'short_review' ];
-		$product->description = $data[ 'description' ] ?? NULL;
-		$product->is_virtual = $data[ 'type' ] == 2;
-		$product->brand_id = $data[ 'brand_id' ] ?? NULL;
-
-		$product->save();
-
-		$this->syncCategories($data['categories']  , $product);
-		$this->syncImages($data['images']  , $product);
-		$this->syncAttributes( $data[ 'attributes' ] , $product );
-		$this->syncVariables( $data[ 'variables' ] , $product );
-
-		$product->refresh();
-
-		return $product;
-	}
-
-	protected function syncCategories(array $categories , Product $product){
-	    $product->categories()->sync($categories);
+    public function __construct(Product $product)
+    {
+        $this->product = $product;
     }
-	protected function syncImages(array $imagesData , Product $product){
-	    $ids=[];
-	    foreach ($imagesData as $image){
-	        $ids[] = $image['file_id'];
+
+    public function index(Request $request)
+    {
+        $products = Product::query();
+
+        $relations = [...Product::RELATIONS];
+
+        foreach(Category::RELATIONS as  $item){
+            $relations[] = 'categories.'.$item;
+        };
+
+        foreach(ProductVariant::RELATIONS as  $item){
+            $relations[] = 'variants.'.$item;
+        };
+
+        $with = (is_array($request->input('with'))?$request->input('with') : [$request->input('with')]);
+
+        if ($request->has('with') && !count(array_diff( $with, $relations))) {
+
+            $products = $products->with($with);
         }
-	    $product->files()->sync($ids);
+
+        if (request()->has('condition')) {
+            $products = $products->where('condition' , (int)request('condition'));
+        } else {
+            $products = $products->where('condition' , 1);
+        }
+
+        if (request()->has('published_at')) {
+            $preg = preg_match('/^([+-]?)(\d{4}-\d{1,2}-\d{1,2})$/' , request('published_at') , $match);
+            if ($preg) {
+                $op = $match[1] === '+' ? '>' : '<';
+                $time = $match[2];
+            }
+        } else {
+            $op = '<=';
+            $time = Carbon::now()->format('Y-m-d');
+        }
+
+        $products = $products->where('published_at' , $op , $time);
+
+        return $products->get();
     }
 
-	protected function syncAttributes ( array $attributesData , Product $product ) {
-		$syncData = [];
-		foreach ( $attributesData as $i => $attribute){
-            foreach ( $attribute['values'] as $index => $attributeData ) {
-                $attributeValue = AttributeValue::find( $attributeData );
-                if ( $attributeValue ) {
-                    $syncData[ $attributeValue->id ] = [
-                        'attribute_id' => $attributeValue->attribute->id ,
-                        'group_name'   => $attributeData[ 'group_name' ] ?? NULL ,
-                        'number'       => $i ,
-                    ];
-                }
+    public function store(ProductRequest $request)
+    {
+        return \response([
+            'message'  => 'Create Product Successfully' ,
+            'category' => $this->save($request->all()) ,
+        ] , 200);
+    }
+
+    protected function save(array $data , Product $product = NULL)
+    {
+        //If Create Product
+        if ($product == NULL) {
+            $product = new Product();
+        }
+
+        $product->name = $data['name'];
+        $product->slug = Str::slug($data['slug']);
+        $product->sku = $data['sku'];
+        $product->type = $data['type'];
+        $product->condition = $data['condition'];
+        $product->review = $data['review'];
+        $product->short_review = $data['short_review'];
+        $product->description = $data['description'] ?? NULL;
+        $product->is_virtual = $data['type'] == 2;
+        $product->brand_id = $data['brand_id'] ?? NULL;
+        $product->published_at = $data['published_at'] ?? NULL;
+
+        $product->save();
+
+        $this->syncCategories($data['categories'] , $product);
+
+        $images = $data['images'];
+        $productImages = [];
+
+        foreach ($images as $image){
+            $VariantIndex= array_key_exists('variant_index' , $image)? $image['variant_index'] : false ;
+            $Variant = array_key_exists ((int)$VariantIndex , $data['variants'])? $data['variants'][(int)$VariantIndex]: false;
+
+            if($VariantIndex === null || $VariantIndex === '' || !$Variant ){
+                $productImages[] = $image;
+                continue;
+            }
+
+            if (!array_key_exists('images' , $Variant)){
+                $data['variants'][(int)$VariantIndex]['images'] = [];
+            }
+            $data['variants'][(int)$VariantIndex]['images'][]= $image;
+        }
+
+
+        $this->syncImages($productImages , $product);
+        $this->syncAttributes($data['attributes'] , $product);
+        $this->syncVariants($data['variants'] , $product);
+
+        $product->refresh();
+
+        return $product;
+    }
+
+    protected function syncCategories(array $categories , Product $product)
+    {
+        $product->categories()->sync($categories);
+    }
+
+    protected function syncImages(array $imagesData , Product $product)
+    {
+        $product->files()->sync(collect($imagesData)->pluck('id')->toArray());
+    }
+
+    protected function syncAttributes(array $attributesData , Product $product)
+    {
+        $syncData = [];
+        foreach ($attributesData as $i => $attribute) {
+            $syncData[$attribute['id']] = [
+                'group_name'   => $attribute['group_name'] ?? NULL ,
+                'number'       => $i ,
+            ];
+        }
+
+        $product->attributes()->sync($syncData);
+    }
+
+    protected function syncVariants(array $variantsData , Product $product)
+    {
+        $issetvariants = [];
+
+        foreach ($variantsData as $index => $variantData) {
+            if ($variantData['id'] ?? FALSE) {
+                $issetvariants[] = $variantData['id'];
             }
         }
 
-		$product->attributes()->sync( $syncData );
-	}
+        $product->variants()->whereNotIn('id' , $issetvariants)->delete();
 
-	protected function syncVariables ( array $variablesData , Product $product ) {
-		$issetVariables=[];
-
-        foreach ( $variablesData as $index => $variableData ) {
-            if ($variableData['id']??false){
-                $issetVariables[]=$variableData['id'];
-            }
-        }
-        $product->variables()->whereNotIn('id' , $issetVariables)->delete();
-		foreach ( $variablesData as $index => $variableData ) {
-			$variableValue = AttributeValue::find( $variableData[ 'variable_value_id' ]??0 );
-
+        foreach ($variantsData as $index => $variantData) {
             $syncData = [
-                'purchase_price'    => $variableData[ 'purchase_price' ] ?? NULL ,
-                'selling_price'     => $variableData[ 'selling_price' ] ?? NULL ,
-                'discounted_price'  => $variableData[ 'discounted_price' ] ?? NULL ,
-                'wholesale_price'   => $variableData[ 'wholesale_price' ] ?? NULL ,
-                'minimum_wholesale' => $variableData[ 'minimum_wholesale' ] ?? NULL ,
-                'inventory'         => $variableData[ 'inventory' ] ?? NULL ,
+                'attribute_id'      => $variantData['attribute_id']??null,
+                'purchase_price'    => $variantData['purchase_price'] ?? NULL ,
+                'selling_price'     => $variantData['selling_price'] ?? NULL ,
+                'discounted_price'  => $variantData['discounted_price'] ?? NULL ,
+                'wholesale_price'   => $variantData['wholesale_price'] ?? NULL ,
+                'minimum_wholesale' => $variantData['minimum_wholesale'] ?? NULL ,
+                'inventory'         => $variantData['inventory'] ?? NULL ,
             ];
 
-            if ($variableValue){
-                $syncData['variable_value_id'] = $variableValue->id;
-                $syncData['variable_id']=$variableValue->attribute->id;
+            if ($variantData['id'] ?? FALSE) {
+                $var = $product->variants()->where('id',$variantData['id'])->first();
+                $var->update($syncData);
+            } else {
+                $var = $product->variants()->create($syncData);
             }
+            $var->files()->sync(collect($variantData['images']??[])->pluck('id')->toArray());
+        }
 
-            if ($variableData['id']??false){
-                $issetVariables[]=$variableData['id'];
+    }
 
-                $product->variables->find($variableData['id'])->update($syncData);
-            }else{
-                $product->variables()->create($syncData);
-            }
+    public function show(Request $request , Product $product)
+    {
+        $relations = [...Product::RELATIONS];
 
-		}
+        foreach(Category::RELATIONS as  $item){
+            $relations[] = 'categories.'.$item;
+        };
 
+        foreach(ProductVariant::RELATIONS as  $item){
+            $relations[] = 'variants.'.$item;
+        };
 
-	}
+        $with = (is_array($request->input('with'))?$request->input('with') : [$request->input('with')]);
+
+        if ($request->has('with') && !count(array_diff( $with, $relations))) {
+            $product = $product->load($with);
+        }
+
+        return $product;
+    }
+
+    public function update(ProductRequest $request , Product $product)
+    {
+        return \response([
+            'message'  => 'Update Product Successfully' ,
+            'category' => $this->save($request->all() , $product) ,
+        ] , 200);
+    }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return \response([
+            'message'  => 'Delete Product Successfully' ,
+            'category' => $product ,
+        ] , 200);
+    }
 }

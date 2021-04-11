@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateProductAttributeTable extends Migration {
-	
+
 	/**
 	 * Run the migrations.
 	 *
@@ -16,17 +16,15 @@ class CreateProductAttributeTable extends Migration {
 			$table->id();
 			$table->foreignId( 'product_id' )->index();
 			$table->foreignId( 'attribute_id' )->index();
-			$table->foreignId( 'attribute_value_id' )->index();
-			
+
 			$table->string( 'group_name' )->index()->nullable();
 			$table->integer( 'number' );
-			
+
 			$table->foreign( 'product_id' )->references( 'id' )->on( 'products' )->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreign( 'attribute_id' )->references( 'id' )->on( 'attributes' )->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreign( 'attribute_value_id' )->references( 'id' )->on( 'attribute_values' )->cascadeOnDelete()->cascadeOnUpdate();
-		} );
+			} );
 	}
-	
+
 	/**
 	 * Reverse the migrations.
 	 *
@@ -35,5 +33,5 @@ class CreateProductAttributeTable extends Migration {
 	public function down () {
 		Schema::dropIfExists( 'product_attribute' );
 	}
-	
+
 }

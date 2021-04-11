@@ -19,13 +19,15 @@ class CreateProductsTable extends Migration {
 			$table->string( 'slug' )->unique();
 			$table->string( 'sku' )->unique()->comment( "کد محصول" );
 			$table->smallInteger('condition')->default(0);
+			$table->smallInteger('type')->default(1);
 			$table->text( 'short_review' );
 			$table->text( 'description' );
 			$table->longText( 'review' );
 			$table->boolean( 'is_virtual' )->default(FALSE);
 			$table->longText( 'extra_data' )->nullable();
 			$table->longText( 'default_data' )->nullable()->comment( "اطلاعات پیشفرض محصول جهت لود سریعتر محصول" );
-            $table->timestamp('published_at')->nullable();$table->timestamps();
+            $table->timestamp('published_at')->nullable();
+            $table->timestamps();
 			$table->softDeletes();
 
 			$table->foreign('brand_id')->references('id')->on('brands')->nullOnDelete()->cascadeOnUpdate();
