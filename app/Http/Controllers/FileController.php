@@ -52,13 +52,14 @@ class FileController extends Controller
         $this->uploadOptoins['type'] = 1;
         $this->uploadOptoins['disk'] = 'public';
     }
-    private function setupEditorImageUpload()
+
+    private function setupBrandLogoUpload()
     {
         $this->rules = [
             'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
         ];
 
-        $this->uploadOptoins['path'] = '/Editor/images';
+        $this->uploadOptoins['path'] = '/brands/logo';
         $this->uploadOptoins['type'] = 2;
         $this->uploadOptoins['disk'] = 'public';
     }
@@ -78,6 +79,7 @@ class FileController extends Controller
         $methods = [
             'ProductImage',
             'EditorImage',
+            'BrandLogo'
         ];
 
         if (!in_array($for , $methods)){
