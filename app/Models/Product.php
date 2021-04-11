@@ -19,17 +19,25 @@ class Product extends Model {
 	 'review' ,
 	 'is_virtual' ,
 	];
+	const RELATIONS = [
+	    'attributes',
+        'variants',
+        'categories',
+        'brand',
+        'files'
+    ];
+
+	protected $casts = [
+	    'published_at' => 'datetime'
+    ];
 
 	public function attributes () {
 		$pivots = [ 'group_name' , 'number' ];
 
-		$args = [ 'product_attribute' , 'product_id' , 'attribute_value_id' ];
-
-		return $this->belongsToMany( AttributeValue::class , ...$args )->using( ProductAttribute::class )->withPivot( $pivots );
+		return $this->belongsToMany( Attribute::class , 'product_attribute')->withPivot( $pivots );
 	}
-
-	public function variables () {
-		return $this->hasMany( ProductVariable::class );
+	public function variants () {
+		return $this->hasMany( ProductVariant::class );
 	}
 
 	public function categories () {

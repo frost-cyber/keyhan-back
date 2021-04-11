@@ -13,31 +13,11 @@ class UserController extends Controller
     {
         return User::all();
     }
-//    public function store(Request $request)
-//    {
-//        //
-//        return \response( [
-//		    'message'  => 'Create User Successfully' ,
-//            'user' => NULL ,
-//            ] , 200 );
-//    }
-
 
     public function show(User $user)
     {
         return $user;
     }
-
-
-//    public function update(Request $request, User $user)
-//    {
-//        //
-//        return \response( [
-//		    'message'  => 'Update User Successfully' ,
-//            'user' => NULL ,
-//            ] , 200 );
-//    }
-
 
     public function destroy(User $user)
     {

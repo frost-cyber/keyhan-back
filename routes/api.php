@@ -31,9 +31,10 @@ Route::get('user' , function(){
 Route::apiResource('categories' , StoreCategoryController::class);
 Route::apiResource('articleCategories' , \App\Http\Controllers\ArticleCategoryController::class)->parameters(['articleCategories' => 'category']);
 Route::apiResource('attributes' , AttributeController::class);
-Route::apiResource('products' , ProductController::class);
+Route::get('products/{product:slug}' , [ProductController::class , 'show'])->whereAlpha('product');
+Route::apiResource('products' , ProductController::class)->whereNumber('product');
 Route::apiResource('brands' , BrandController::class);
-Route::get('tags','ArticleController@tags');
+Route::get('tags','\App\Http\Controllers\ArticleController@tags');
 Route::apiResource('articles',\App\Http\Controllers\ArticleController::class)->scoped(['article' =>'slug']);
 
 
