@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    protected $fillable=[
+        'body',
+        'name',
+        'email',
+        'user_id',
+        'parent_id'
+    ];
     use HasFactory;
     protected $with = ['commentable','user'];
     public function parent(){

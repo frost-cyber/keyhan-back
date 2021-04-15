@@ -34,7 +34,8 @@ Route::get('categoryArticle','\App\Http\Controllers\ArticleCategoryController@ca
 Route::apiResource('attributes' , AttributeController::class);
 Route::apiResource('products' , ProductController::class);
 Route::apiResource('brands' , BrandController::class);
-Route::apiResource('articleComments' , \App\Http\Controllers\ArticleCommentController::class)->scoped(['comment'=>'id']);
+Route::apiResource('articleComments' , \App\Http\Controllers\ArticleCommentController::class)->parameters(['articleComments'=>'comment'])->scoped(['comment'=>'id']);
+Route::get('articleComments/show_all',[\App\Http\Controllers\ArticleCommentController::class,'show_all']);
 Route::put('articleComments/{comment}/toggleConfirm',[\App\Http\Controllers\ArticleCommentController::class,'toggleConfirm']);
 Route::get('tags',[\App\Http\Controllers\ArticleController::class,'tags']);
 Route::apiResource('articles',\App\Http\Controllers\ArticleController::class)->scoped(['article' =>'slug']);

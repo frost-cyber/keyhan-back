@@ -31,14 +31,30 @@ class ArticleController extends Controller
             'tags' => 'required',
             'status' => 'required|in:active,deactive',
             'thumbnail'=> 'required|array',
-            'thumbnail.id'=>'required|int|exist:files,id'
+            'thumbnail.id'=>'required|int|exists:files,id'
         ]);
         $this->save($request->all(),new Article());
         return response('create successfully','200');
     }
 
     public function show(Article $article){
-        return $article->load('categories')->append(['thumbnail']);
+
+
+
+        return $article->load([ 'comments' => function($query){
+            if (is_numeric(\request('commentsConfirmed'))){
+                // اینجا در آخر باز هم همون آبجکت رو بر میگردونه واسه همون باز هم ما به همه متود ها و اون آبجکت دسترسی داریم
+                // پس اگر میخوایم یک رست فول اپی آی داشته باشیم باید یک کوءری واسه اون درخواست درست کنیم و برا اساس هر کدوم از شرط ها مون به همین شکل خط پایین کوءری هامون رو تغییر میدیم هر شرط رو که میزارم بر اساس هر منطقی چون در آخر باز همون آبجکت رو برمیگردونه دوباره من داخل یک مقدار ذخیره میکنیم وکه میشه همون کورءری
+                $query = $query->where('confirmed' , (int) \request('commentsConfirmed'));
+            }
+
+//            $query = $query->where()
+//            $query = $query->where()
+//            $query = $query->where()
+//            $query = $query->where()
+//            $query = $query->where()
+            return $query->without('commentable');
+        }] )->load( 'categories')->append(['thumbnail']);
     }
 
     public function update(Request $request, Article $article)
@@ -52,7 +68,7 @@ class ArticleController extends Controller
             'tags' => 'required',
             'status' => 'required|in:active,deactive',
             'thumbnail'=> 'required|array',
-            'thumbnail.id'=>'required|int|exist:files,id'
+            'thumbnail.id'=>'required|int|exists:files,id'
         ]);
         $this->save($request->all(), $article);
         return response('update article successfully', 200);

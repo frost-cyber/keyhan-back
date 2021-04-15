@@ -36,6 +36,6 @@ class Article extends Model
         return $this->morphToMany(Category::class,'categorizable' , 'categorizables');
     }
     public function comments(){
-        return $this->morphToMany(Comment::class,'commentable');
+        return $this->morphMany(Comment::class,'commentable');
     }
 }
