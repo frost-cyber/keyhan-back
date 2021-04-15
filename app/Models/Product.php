@@ -23,6 +23,7 @@ class Product extends Model {
 	    'attributes',
         'variants',
         'categories',
+        'comments',
         'brand',
         'files'
     ];
@@ -30,6 +31,10 @@ class Product extends Model {
 	protected $casts = [
 	    'published_at' => 'datetime'
     ];
+
+	public function comments (){
+	    return $this->morphMany(Comment::class , 'commentable');
+    }
 
 	public function attributes () {
 		$pivots = [ 'group_name' , 'number' ];

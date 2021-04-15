@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Models\AttributeValue;
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Carbon\Carbon;
@@ -180,21 +181,26 @@ class ProductController extends Controller
 
     }
 
-    public function show(Request $request , Product $product)
+    public function show(Request $request , Product $product , $slug = null)
     {
-        $relations = [...Product::RELATIONS];
+        $product = !$slug ? $product : Product::where('slug' , $slug)->firstOrFail() ;
+
+        $relations = Product::RELATIONS;
 
         foreach(Category::RELATIONS as  $item){
             $relations[] = 'categories.'.$item;
         };
 
+        foreach(Comment::RELATIONS as  $item){
+            $relations[] = 'comments.'.$item;
+        };
+
         foreach(ProductVariant::RELATIONS as  $item){
             $relations[] = 'variants.'.$item;
         };
-
-        $with = (is_array($request->input('with'))?$request->input('with') : [$request->input('with')]);
-
-        if ($request->has('with') && !count(array_diff( $with, $relations))) {
+        $with = $request->input('with');
+        (is_array($with) ?: $with = [$with]);
+        if ($request->has('with') && !array_diff( $with, $relations)) {
             $product = $product->load($with);
         }
 

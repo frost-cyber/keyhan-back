@@ -7,8 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    protected $fillable = [
+        'name',
+        'email',
+        'body',
+        'confirmed'
+    ];
     use HasFactory;
-    protected $with = ['commentable','user'];
+    const RELATIONS = [
+        'children' ,
+        'childrenRecursive' ,
+        'parent' ,
+        'parentRecursive' ,
+        'user'
+    ];
+
     public function parent(){
         return $this->belongsTo(Comment::class , 'parent_id');
     }
