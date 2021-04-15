@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     use HasFactory;
-
+    protected $with = ['commentable','user'];
     public function parent(){
         return $this->belongsTo(Comment::class , 'parent_id');
     }
@@ -23,5 +23,11 @@ class Comment extends Model
 
     public function parentRecursive(){
         return $this->children()->with('parentRecursive', );
+    }
+    public function commentable(){
+        return $this->morphTo();
+    }
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

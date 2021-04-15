@@ -5,14 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
-
+use Illuminate\Database\Eloquent\Builder;
 class ArticleController extends Controller
 {
+
     public function index()
     {
-        $articles=Article::with(['files','categories'])->get();
-        return $articles->toJson();
+        $articles = Article::with(['files','categories']);
+        if (\request()->has('category')){
+            $articles = $articles->whereHas('categories',function (Builder $query){
+                $query->where('id',\request('category'));
+            } );
+        }
+        $articles=$articles->get();
+        return $articles;
     }
+
 
     public function store(Request $request)
     {
@@ -21,7 +29,9 @@ class ArticleController extends Controller
             'description' => 'required',
             'slug' => 'required|unique:articles',
             'tags' => 'required',
-            'status' => 'required|in:active,deactive'
+            'status' => 'required|in:active,deactive',
+            'thumbnail'=> 'required|array',
+            'thumbnail.id'=>'required|int|exist:files,id'
         ]);
         $this->save($request->all(),new Article());
         return response('create successfully','200');
@@ -40,7 +50,9 @@ class ArticleController extends Controller
             'description' => 'required',
             'slug' => 'required|unique:articles,slug,'.$article->id,
             'tags' => 'required',
-            'status' => 'required|in:active,deactive'
+            'status' => 'required|in:active,deactive',
+            'thumbnail'=> 'required|array',
+            'thumbnail.id'=>'required|int|exist:files,id'
         ]);
         $this->save($request->all(), $article);
         return response('update article successfully', 200);
@@ -63,7 +75,13 @@ class ArticleController extends Controller
         $article->comments_count = $data['comments_count'] ?? $article->comments_count ?? 0;
         $article->save();
         $article->categories()->sync($data['categories']['id']);
-//        $article->files()->sync($data['image_id'] , ['default' => true , 'description' => 'Thumbnail' , 'number' => 0]);
+        if ($data['thumbnail']){
+            $article->files()->sync($data['thumbnail'] ['id'], ['default' => true , 'description' => 'Thumbnail' , 'number' => 0]);
+        }
+        else{
+            $article->files()->delete();
+
+        }
 
         return $article;
     }

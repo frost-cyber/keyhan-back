@@ -30,11 +30,14 @@ Route::get('user' , function(){
 
 Route::apiResource('categories' , StoreCategoryController::class);
 Route::apiResource('articleCategories' , \App\Http\Controllers\ArticleCategoryController::class)->parameters(['articleCategories' => 'category']);
+Route::get('categoryArticle','\App\Http\Controllers\ArticleCategoryController@categoryArticle');
 Route::apiResource('attributes' , AttributeController::class);
 Route::get('products/{product:slug}' , [ProductController::class , 'show'])->whereAlpha('product');
 Route::apiResource('products' , ProductController::class)->whereNumber('product');
 Route::apiResource('brands' , BrandController::class);
-Route::get('tags','\App\Http\Controllers\ArticleController@tags');
+Route::get('tags',[\App\Http\Controllers\ArticleController::class,'tags']);
+Route::put('articleComments/{comment}/toggleConfirm',[\App\Http\Controllers\ArticleCommentController::class,'toggleConfirm']);
+Route::apiResource('articleComments' , \App\Http\Controllers\ArticleCommentController::class)->scoped(['comment'=>'id']);
 Route::apiResource('articles',\App\Http\Controllers\ArticleController::class)->scoped(['article' =>'slug']);
 
 
