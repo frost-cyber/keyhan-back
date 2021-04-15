@@ -11,7 +11,9 @@ class Comment extends Model
         'name',
         'email',
         'body',
-        'confirmed'
+        'confirmed',
+        'user_id',
+        'parent_id',
     ];
     use HasFactory;
     const RELATIONS = [
