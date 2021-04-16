@@ -10,22 +10,21 @@ class ProductCommentController extends Controller
 {
     public function index()
     {
-        $comments = Comment::whereHasMorph('commentable' , Product::class);
+        $comments = Comment::whereHasMorph('commentable' , Product::class)->with('commentable');
 
-        if (\request()->has('confirmed')) {
-            $confirmed = (boolean)\request('confirmed');
+        if (\request()->has('confirmed') && \request('confirmed') >= 0) {
+            $comments->where('confirmed' , (boolean) request('confirmed'));
         }
-
-        $comments->where('confirmed' , $confirmed ?? TRUE);
         return $comments->latest()->get();
     }
 
     public function show(Comment $comment)
     {
+        if (!str_ends_with($comment->commentable_type , 'Product')){
+            abort(404);
+        }
         return $comment->load([
-            'user' => function ($query) {
-                $query->select('name' , 'email');
-            },
+            'user', 'commentable' , 'parent'
         ]);
     }
 
