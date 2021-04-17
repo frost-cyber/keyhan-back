@@ -8,7 +8,9 @@ use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
-
+    public function currentUser(){
+        return auth()->user();
+    }
     public function index()
     {
         return User::all();

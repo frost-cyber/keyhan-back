@@ -11,6 +11,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\ProductCommentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreCategoryController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,7 +31,7 @@ Route::post('auth/login' , [LoginController::class , 'login']);
 Route::post('auth/send.verify.code' , [RegisterController::class , 'sendVerifyCode']);
 Route::post('auth/check.verify.code' , [RegisterController::class , 'checkVerifyCode']);
 Route::post('auth/register' , [RegisterController::class , 'register']);
-
+Route::get('user' ,[UserController::class , 'currentUser']);
 // Store //
 Route::apiResource('attributes' , AttributeController::class);
 Route::apiResource('brands' , BrandController::class);

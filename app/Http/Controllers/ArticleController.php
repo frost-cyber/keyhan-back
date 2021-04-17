@@ -54,7 +54,7 @@ class ArticleController extends Controller
 //            $query = $query->where()
 //            $query = $query->where()
             return $query->without('commentable');
-        }] )->load( 'categories')->append(['thumbnail']);
+        }] )->load( 'categories' , 'categories.parent')->append(['thumbnail']);
     }
 
     public function update(Request $request, Article $article)

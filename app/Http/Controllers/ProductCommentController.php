@@ -13,38 +13,41 @@ class ProductCommentController extends Controller
         $comments = Comment::whereHasMorph('commentable' , Product::class)->with('commentable');
 
         if (\request()->has('confirmed') && \request('confirmed') >= 0) {
-            $comments->where('confirmed' , (boolean) request('confirmed'));
+            $comments->where('confirmed' , (boolean)request('confirmed'));
         }
         return $comments->latest()->get();
     }
 
     public function show(Comment $comment)
     {
-        if (!str_ends_with($comment->commentable_type , 'Product')){
+        if (!str_ends_with($comment->commentable_type , 'Product')) {
             abort(404);
         }
         return $comment->load([
-            'user', 'commentable' , 'parent'
+            'user' , 'commentable' , 'parent',
         ]);
     }
 
     public function store(Request $request)
     {
-        $comment = new Comment();
+        $roles = [
+            'body'  => 'required' ,
+            'name'  => 'required|min:3' ,
+            'email' => 'required|email',
+            'article_id' => 'required|exists:articles,id',
+            'parent_id' => 'nullable|exists:comments,id'
+        ];
 
         if (Auth()->check()) {
-            $comment->user_id = auth()->id();
-        } else {
-            $comment->name = $data['name'] ?? NULL;
-            $comment->email = $data['email'] ?? NULL;
+            unset($roles['name'] , $roles['email']);
         }
 
-        if ($request->has('parent_id')) {
-            $comment->parent_id = (int)$request->parent_id ?: NULL;
-        }
+        $request->validate($roles , [] , ['body' => 'نظر']);
 
-        $comment->body = $request->body;
-        Product::findOrFail($request->product_id)->comments()->save($comment);
+        $comment = $request->all();
+        $comment['user_id'] = auth()->id();
+
+        Product::findOrFail($request->product_id)->comments()->create($comment);
 
         return response('Create comment successfully');
     }
