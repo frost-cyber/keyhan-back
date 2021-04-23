@@ -13,8 +13,11 @@ class ArticleCommentController extends Controller
     {
         $comments = Comment::whereHasMorph('commentable', Article::class)->with(['commentable' , 'user']);
 
-        if (\request()->has('confirmed') && \request('confirmed') >= 0) {
-            $comments= $comments->where('confirmed' , (boolean)request('confirmed'));
+        if (\request()->has('confirmed')) {
+
+            if(\request('confirmed') >= 0){
+                $comments =  $comments->where('confirmed' , (boolean)request('confirmed'));
+            }
         }else{
             $comments= $comments->where('confirmed' , TRUE);
         }
