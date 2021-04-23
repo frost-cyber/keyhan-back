@@ -9,6 +9,7 @@ use App\Models\Comment;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Str;
 
@@ -62,7 +63,46 @@ class ProductController extends Controller
 
         $products = $products->where('published_at' , $op , $time);
 
-        return $products->get();
+        if ($request->has('category')){
+            $category = Category::where('slug' , request('category'))->first();
+            function getIds($model , $relation){
+                $ids = [$model->id];
+                if (!$model->$relation) return $ids;
+                foreach($model->$relation as $value ){
+                    array_push($ids,...getIds($value , $relation));
+                }
+                return $ids;
+            }
+            if($category){
+                $products = $products->whereHas('categories' , function(Builder $query) use($category){
+                    return $query->whereIn('id' , getIds($category , 'children'));
+                });
+            }
+        }
+
+        if($request->has('brands')){
+            $brands = (is_array($request->input('brands'))?$request->input('brands') : [$request->input('brands')]);
+            $products = $products->whereHas('brand' , function(Builder $query) use($brands){
+                return $query->whereIn('slug' , $brands);
+            });
+        }
+
+        if ($request->has('search')){
+            $products = $products->where('name' , 'like' , "%{$request->input('search')}%");
+        }
+        $products = $products->orderByDesc(
+            (new \App\Models\ProductVariant)->select('selling_price')
+                ->whereColumn('product_id' , 'products.id')
+                ->orderBy('selling_price')->limit(1)
+        );
+
+        if ($request->has('pagination')){
+            $products = $products->paginate('15');
+        }else{
+            $products= $products->get();
+        }
+
+        return $products;
     }
 
     public function store(ProductRequest $request)
@@ -103,7 +143,7 @@ class ProductController extends Controller
             $VariantIndex= array_key_exists('variant_index' , $image)? $image['variant_index'] : false ;
             $Variant = array_key_exists ((int)$VariantIndex , $data['variants'])? $data['variants'][(int)$VariantIndex]: false;
 
-            if($VariantIndex === null || $VariantIndex === '' || !$Variant ){
+            if($VariantIndex === null || $VariantIndex === '' || !$Variant || (int)$data['type'] !== 2){
                 $productImages[] = $image;
                 continue;
             }
