@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
+use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -68,6 +69,7 @@ class ArticleCategoryController extends Controller
      */
     public function show(Category $category): Category
     {
+
         return $category;
     }
 
@@ -101,7 +103,10 @@ class ArticleCategoryController extends Controller
         ] , 200);
     }
     public function categoryArticle(){
-                $categoriesArticle=Category::limit(5)->get();
+                $categoriesArticle=Category::where('parent_id',null)->limit(5)->get();
                 return $categoriesArticle->toJson();
     }
-}
+
+    }
+
+
