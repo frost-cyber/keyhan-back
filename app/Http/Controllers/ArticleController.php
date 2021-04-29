@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 class ArticleController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $articles = Article::with(['files', 'categories']);
         if (\request()->has('category')) {
@@ -31,8 +31,12 @@ class ArticleController extends Controller
                 });
             }
         }
-
-        $articles = $articles->get();
+        if($request->has('pagination')){
+            $articles=$articles->paginate('4');
+        }
+        else{
+            $articles = $articles->get();
+        }
         return $articles;
     }
 

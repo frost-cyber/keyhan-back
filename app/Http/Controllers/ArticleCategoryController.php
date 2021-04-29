@@ -103,7 +103,7 @@ class ArticleCategoryController extends Controller
         ] , 200);
     }
     public function categoryArticle(){
-                $categoriesArticle=Category::where('parent_id',null)->limit(5)->get();
+                $categoriesArticle=Category::where('parent_id',null)->where('type',2)->limit(5)->get();
                 return $categoriesArticle->toJson();
     }
 

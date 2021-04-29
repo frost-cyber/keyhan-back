@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateAttributesTable extends Migration {
-	
+
 	/**
 	 * Run the migrations.
 	 *
@@ -17,10 +17,11 @@ class CreateAttributesTable extends Migration {
 			$table->string( 'name' );
 			$table->integer( 'type' )->index();
 			$table->boolean( 'is_variable' );
+			$table->text('value');
 			$table->text( 'extra_data' )->nullable();
 		} );
 	}
-	
+
 	/**
 	 * Reverse the migrations.
 	 *
@@ -29,5 +30,5 @@ class CreateAttributesTable extends Migration {
 	public function down () {
 		Schema::dropIfExists( 'attributes' );
 	}
-	
+
 }

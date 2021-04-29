@@ -58,7 +58,6 @@ class ProductRequest extends FormRequest
             'required' ,
             Rule::exists(Category::class , 'id')->where('type' , Category::TYPE_STORE),
         ];
-        print_r($rules);
         return $rules;
     }
 
