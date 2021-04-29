@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -52,7 +53,14 @@ class ProductRequest extends FormRequest
 
         }
 
-
+        if ((int) $this->input('type') === Product::PRODUCT_TYPE_VIRTUAL){
+            $rules['links'] = 'array|required|min:1';
+            $rules['links.*'] = 'array';
+            $rules['links.*.id'] = 'nullable';
+            $rules['links.*.link'] = 'required';
+            $rules['links.*.required'] = 'nullable';
+            $rules['links.*.number'] = 'nullable|distinct';
+        }
 
         $rules['categories.*'] = [
             'required' ,

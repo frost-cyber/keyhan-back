@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,7 +14,5 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('testsms' , [\App\Http\Controllers\Auth\RegisterController::class , 'sendVerifyCode']);
-
-Route::post('login' , [\App\Http\Controllers\Auth\LoginController::class , 'login']);
+Route::post('login' , [LoginController::class , 'login']);
+Route::post('logout' , [LoginController::class , 'logout']);

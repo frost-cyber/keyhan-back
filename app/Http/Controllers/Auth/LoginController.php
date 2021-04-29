@@ -38,7 +38,7 @@ class LoginController extends Controller
 
     protected function validateRequest()
     {
-        request()->validate($this->validationRules , $this->validationCustomMessage , $this->validationAttributes);
+        request()->validate($this->validationRules, $this->validationCustomMessage, $this->validationAttributes);
     }
 
     protected function passwordValidationParams()
@@ -49,23 +49,24 @@ class LoginController extends Controller
     protected function credentials(): array
     {
         return [
-            $this->username() => request('username') ,
-            'password'        => request('password') ,
+            $this->username() => request('username'),
+            'password'        => request('password'),
         ];
     }
 
-    public function checkUsername(Request $request){
+    public function checkUsername(Request $request)
+    {
         $this->usernameValidationParams();
         $this->validateRequest();
 
-        session()->put('usernameType', $this->username() );
-        session()->put('usernameValue', $request->input('username') );
+        session()->put('usernameType', $this->username());
+        session()->put('usernameValue', $request->input('username'));
 
-        $status = (boolean)User::query()->where($this->username() , $request->input('username'))->first();
+        $status = (boolean)User::query()->where($this->username(), $request->input('username'))->first();
         return response(['status' => $status]);
     }
 
-    public function login(Request $request)
+    public function login()
     {
         $this->usernameValidationParams();
         $this->passwordValidationParams();
@@ -73,17 +74,29 @@ class LoginController extends Controller
 
         if (!auth()->attempt($this->credentials())) {
             throw ValidationException::withMessages([
-                'username' => [trans('auth.failed')] ,
+                'username' => [trans('auth.failed')],
             ]);
         }
 
-        return auth()->user()->createToken('Web')->plainTextToken;
+        return response([
+            'message' => 'Login Successfully',
+            'user'    => auth()->user(),
+            'token'   => auth()->user()->createToken('Web')->plainTextToken,
+        ]);
 
     }
 
     public function logout()
     {
+        auth()->user()->tokens()->delete();
 
+        auth()->logout();
+
+        request()->session()->invalidate();
+
+        request()->session()->regenerateToken();
+
+        return response('Logout Successfully');
     }
 
 }

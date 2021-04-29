@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 // Auth //
 Route::post('auth/check.username' , [LoginController::class , 'checkUsername']);
 Route::post('auth/login' , [LoginController::class , 'login']);
+Route::post('auth/logout' , [LoginController::class , 'logout']);
 Route::post('auth/send.verify.code' , [RegisterController::class , 'sendVerifyCode']);
 Route::post('auth/check.verify.code' , [RegisterController::class , 'checkVerifyCode']);
 Route::post('auth/register' , [RegisterController::class , 'register']);

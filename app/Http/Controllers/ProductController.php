@@ -242,12 +242,13 @@ class ProductController extends Controller
         $with = $request->input('with');
         (is_array($with) ?: $with = [$with]);
         if ($request->has('with') && !array_diff( $with, $relations)) {
-            if ($key = array_search('comments' , $with) >= 0){
-                $with = array_splice($with,$key, 1);
+            $key = array_search('comments' , $with);
+            if ($key && $key >= 0){
+                array_splice($with,$key, 1);
                 $with['comments'] = function($query){
                     return $query->where('confirmed' , TRUE);
                 };
-            };
+            }
             $product = $product->load($with);
         }
         return $product;

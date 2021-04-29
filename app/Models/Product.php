@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model {
 
 	use HasFactory , SoftDeletes;
-
+	const PRODUCT_TYPE_SIMPLE = 1;
+	const PRODUCT_TYPE_VARIANT = 2;
+    const PRODUCT_TYPE_VIRTUAL = 3;
 	protected $fillable = [
 	 'name' ,
 	 'slug' ,
