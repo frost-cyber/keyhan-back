@@ -25,6 +25,16 @@ class ProductVariant extends Model
         'files',
     ];
 
+    public static function ALL_RELATIONS() {
+        $relations = static::RELATIONS;
+
+        foreach ( Attribute::ALL_RELATIONS() as $item ) {
+            $relations[] = 'attribute.' . $item;
+        }
+
+        return $relations;
+    }
+
     public function attribute()
     {
         return $this->belongsTo(Attribute::class , 'attribute_id');

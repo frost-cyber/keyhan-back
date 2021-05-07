@@ -23,7 +23,10 @@ class BrandFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'slug' => $this->faker->unique()->word
+            'slug' => function (array $attributes) {
+                return \Str::slug($attributes['name']);
+            },
+
         ];
     }
 }

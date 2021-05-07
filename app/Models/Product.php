@@ -12,27 +12,11 @@ class Product extends Model {
 	const PRODUCT_TYPE_SIMPLE = 1;
 	const PRODUCT_TYPE_VARIANT = 2;
     const PRODUCT_TYPE_VIRTUAL = 3;
-	protected $fillable = [
-	 'name' ,
-	 'slug' ,
-	 'sku' ,
-	 'short_review' ,
-	 'description' ,
-	 'review' ,
-	 'is_virtual' ,
-	];
-	const RELATIONS = [
-	    'attributes',
-        'variants',
-        'categories',
-        'comments',
-        'brand',
-        'files'
-    ];
 
-	protected $casts = [
-	    'published_at' => 'datetime'
-    ];
+	protected $fillable = [ 'name', 'slug', 'sku', 'short_review', 'description', 'review', 'is_virtual',];
+	const RELATIONS = [ 'attributes', 'variants', 'categories', 'comments', 'brand', 'files', 'links',];
+
+	protected $casts = [ 'published_at' => 'datetime' ];
 
 	public function comments (){
 	    return $this->morphMany(Comment::class , 'commentable');
@@ -59,4 +43,26 @@ class Product extends Model {
 	    return $this->morphToMany( File::class , 'fileable' , 'fileables');
     }
 
+    public function links(){
+	    return $this->hasMany(ProductLink::class);
+    }
+
+    public static function ALL_RELATIONS(){
+
+        $relations = static::RELATIONS;
+
+        foreach ( Category::ALL_RELATIONS() as $item ) {
+            $relations[] = 'categories.' . $item;
+        }
+
+        foreach ( Comment::ALL_RELATIONS() as $item ) {
+            $relations[] = 'comments.' . $item;
+        }
+
+        foreach ( ProductVariant::ALL_RELATIONS() as $item ) {
+            $relations[] = 'variants.' . $item;
+        }
+
+        return $relations;
+    }
 }

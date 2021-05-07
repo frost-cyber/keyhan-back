@@ -20,7 +20,22 @@ class Category extends Model
     ];
     public $timestamps = FALSE;
 
-    public function childrenRecursive()
+	public static function ALL_RELATIONS() {
+
+	   $relations = static::RELATIONS;
+
+        foreach ( Category::RELATIONS as $item ) {
+            $relations[] = 'parent.' . $item;
+        }
+
+        foreach ( Category::RELATIONS as $item ) {
+            $relations[] = 'children.' . $item;
+        }
+
+        return $relations;
+	}
+
+	public function childrenRecursive()
     {
         return $this->children()->with('childrenRecursive' ,);
     }

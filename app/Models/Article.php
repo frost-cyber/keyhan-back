@@ -8,7 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
     use HasFactory;
-    protected $appends=['thumbnail'];
+
+    const RELATIONS = [
+        'categories',
+        'files',
+        'comments',
+    ];
+
+    protected $appends=[ 'thumbnail'];
     protected $fillable=[
         'title',
         'body',
@@ -25,7 +32,21 @@ class Article extends Model
     protected $casts=['tags'=>'array'];
     protected $table = 'articles';
 
-    public function getThumbnailAttribute(){
+	public static function ALL_RELATIONS() {
+	    $relations = static::RELATIONS;
+
+        foreach ( Category::ALL_RELATIONS() as $item ) {
+            $relations[] = 'categories.' . $item;
+        }
+
+        foreach ( Comment::ALL_RELATIONS() as $item ) {
+            $relations[] = 'comments.' . $item;
+        }
+
+        return $relations;
+	}
+
+	public function getThumbnailAttribute(){
         return $this->files[0]??[];
     }
 

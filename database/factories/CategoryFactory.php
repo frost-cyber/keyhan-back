@@ -13,7 +13,7 @@ class CategoryFactory extends Factory
      * @var string
      */
     protected $model = Category::class;
-
+    protected array $categoryTypes = [Category::TYPE_STORE, Category::TYPE_BLOG];
     /**
      * Define the model's default state.
      *
@@ -24,7 +24,25 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->name,
             'slug' => $this->faker->unique()->word,
-            'type' => $this->faker->randomElement([Category::TYPE_STORE , Category::TYPE_BLOG])
+            'type' => $this->faker->randomElement($this->categoryTypes),
         ];
+    }
+
+    public function type(int $type)
+    {
+        in_array($type, $this->categoryTypes) ?: $type = Category::TYPE_STORE;
+        return $this->state(function ($attributes) use ($type) {
+            return ['type' => $type];
+        });
+    }
+
+    public function typeStore()
+    {
+        return $this->type(Category::TYPE_STORE);
+    }
+
+    public function typeBlog()
+    {
+        return $this->type(Category::TYPE_BLOG);
     }
 }

@@ -39,8 +39,13 @@ Route::apiResource('brands' , BrandController::class);
 Route::apiResource('storeCategories' , StoreCategoryController::class)->parameters(['storeCategories'=> 'category']);
 Route::apiResource('products' , ProductController::class)->whereNumber('product');
 Route::get('products/{slug}' , [ProductController::class , 'show']);
+Route::get('products/toggle_withlist/{product:slug}', [ProductController::class , 'toggleWishlist']);
+
 Route::apiResource('product/comments' , ProductCommentController::class)->parameters(['product/comments' => 'comment']);
 Route::put('product/comments/{comment}/toggleConfirm',[ProductCommentController::class , 'toggleConfirm']);
+
+
+Route::post('cart/add');
 
 //-- Blog --//
 Route::apiResource('articles', ArticleController::class)->scoped(['article' =>'slug']);

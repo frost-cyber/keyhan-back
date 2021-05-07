@@ -24,7 +24,25 @@ class Comment extends Model
         'user'
     ];
 
-    public function parent(){
+	public static function ALL_RELATIONS() {
+        $relations = static::RELATIONS;
+
+        foreach ( User::ALL_RELATIONS() as $item ) {
+            $relations[] = 'user.' . $item;
+        }
+
+        foreach ( Product::ALL_RELATIONS() as $item ) {
+            $relations[] = 'product.' . $item;
+        }
+
+        foreach ( Article::ALL_RELATIONS() as $item ) {
+            $relations[] = 'article.' . $item;
+        }
+
+        return $relations;
+	}
+
+	public function parent(){
         return $this->belongsTo(Comment::class , 'parent_id');
     }
 

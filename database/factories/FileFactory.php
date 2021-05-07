@@ -21,14 +21,24 @@ class FileFactory extends Factory
      */
     public function definition()
     {
-        $file = $this->faker->image(storage_path('app\public') , 640 , 480);
+        return $this->createFile(storage_path('app/public'));
+    }
+
+    private function createFile($path, $width = 640, $height = 480)
+    {
+        $file = $this->faker->image($path, $width, $height);
         $path = storage_path('app\public') . '\\' . \File::basename($file);
         return [
-            'path' => $path,
-            'name' => \File::basename($file),
+            'path'      => $path,
+            'name'      => \File::basename($file),
             'extension' => \File::extension($file),
-            'link' => \Storage::url(\File::basename($file)),
-            'type' => $this->faker->randomElement([1,2,3,4])
+            'link'      => \Storage::url(\File::basename($file)),
+            'type'      => $this->faker->randomElement([1, 2, 3, 4]),
         ];
+    }
+
+    public function changeSize($width , $height , $path = null){
+        $path = $path?:storage_path('app/public');
+        return $this->state($this->createFile($path , $width, $height));
     }
 }
