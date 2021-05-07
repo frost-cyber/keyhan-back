@@ -23,12 +23,12 @@ class ArticleCategoryController extends Controller
         }
 
         if ($request->has('children')){
-            $query = $query->where('parent_id' ,(int) $request->input('children'));
+            $category = Category::whereType(Category::TYPE_BLOG)->where('slug' , $request->input('children') )->first();
+            if ($category){
+                $query = $query->where('parent_id' ,$category->id);
+            }
         }
-
-        if ($request->has('parent')){
-            $query = $query->whereNull('parent_id');
-        }
+        
 
         return $query->get();
     }
@@ -103,7 +103,8 @@ class ArticleCategoryController extends Controller
         ] , 200);
     }
     public function categoryArticle(){
-                $categoriesArticle=Category::where('parent_id',null)->where('type',2)->limit(5)->get();
+                $categoriesArticle=Category::where('parent_id',null)->where('type',2)->get();
+
                 return $categoriesArticle->toJson();
     }
 
