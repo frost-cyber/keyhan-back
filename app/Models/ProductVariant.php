@@ -28,10 +28,6 @@ class ProductVariant extends Model
     public static function ALL_RELATIONS() {
         $relations = static::RELATIONS;
 
-        foreach ( Attribute::ALL_RELATIONS() as $item ) {
-            $relations[] = 'attribute.' . $item;
-        }
-
         return $relations;
     }
 

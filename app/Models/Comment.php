@@ -27,15 +27,15 @@ class Comment extends Model
 	public static function ALL_RELATIONS() {
         $relations = static::RELATIONS;
 
-        foreach ( User::ALL_RELATIONS() as $item ) {
+        foreach ( User::RELATIONS as $item ) {
             $relations[] = 'user.' . $item;
         }
 
-        foreach ( Product::ALL_RELATIONS() as $item ) {
+        foreach ( Product::RELATIONS as $item ) {
             $relations[] = 'product.' . $item;
         }
 
-        foreach ( Article::ALL_RELATIONS() as $item ) {
+        foreach ( Article::RELATIONS as $item ) {
             $relations[] = 'article.' . $item;
         }
 

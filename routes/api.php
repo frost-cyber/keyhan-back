@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreCategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,4 +61,12 @@ Route::put('articleComments/{comment}/toggleConfirm',[ArticleCommentController::
 // App //
 Route::group(['prefix' => 'files'] , function(){
     Route::post('upload' , [FileController::class , 'upload']);
+});
+
+// Settings //
+Route::group(['prefix' => 'settings'] , function (){
+   Route::get('header' , [ SettingController::class, 'getHeader']);
+   Route::put('header' , [ SettingController::class, 'updateHeader']);
+   Route::get('footer' , [ SettingController::class, 'getFooter']);
+   Route::put('footer' , [ SettingController::class, 'updateFooter']);
 });

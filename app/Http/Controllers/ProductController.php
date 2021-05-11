@@ -24,19 +24,9 @@ class ProductController extends Controller {
     public function index( Request $request ) {
         $products = Product::query();
 
-        $relations = [ ...Product::RELATIONS ];
-
-        foreach ( Category::RELATIONS as $item ) {
-            $relations[] = 'categories.' . $item;
-        };
-
-        foreach ( ProductVariant::RELATIONS as $item ) {
-            $relations[] = 'variants.' . $item;
-        };
-
         $with = ( is_array( $request->input( 'with' ) ) ? $request->input( 'with' ) : [ $request->input( 'with' ) ] );
 
-        if ( $request->has( 'with' ) && ! count( array_diff( $with, $relations ) ) ) {
+        if ( $request->has( 'with' ) && ! count( array_diff( $with, Product::ALL_RELATIONS() ) ) ) {
 
             $products = $products->with( $with );
         }
