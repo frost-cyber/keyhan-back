@@ -45,9 +45,6 @@ Route::get('products/toggle_withlist/{product:slug}', [ProductController::class 
 Route::apiResource('product/comments' , ProductCommentController::class)->parameters(['product/comments' => 'comment']);
 Route::put('product/comments/{comment}/toggleConfirm',[ProductCommentController::class , 'toggleConfirm']);
 
-
-Route::post('cart/add');
-
 //-- Blog --//
 Route::apiResource('articles', ArticleController::class)->scoped(['article' =>'slug']);
 Route::get('tags',[ArticleController::class , 'tags']);

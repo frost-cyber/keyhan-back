@@ -19,6 +19,7 @@ class SettingController extends Controller
             'navbar.phone' => 'required',
         ]);
         Setting::where('key' , 'header')->update([
+            'key' => 'header',
             'options' => $request->only('logo' , 'navbar'),
         ]);
         return response('Ok');
