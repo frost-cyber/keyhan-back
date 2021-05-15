@@ -19,6 +19,8 @@ class FileController extends Controller
         'SettingSiteLogo',
         'SettingLicenseImage',
         'HomeSliderImage',
+        'HomeBrandImage',
+        'HomeCategoryImage'
     ];
 
     private $rules;
@@ -70,6 +72,28 @@ class FileController extends Controller
         ];
 
         $this->uploadOptoins['path'] = '/home/slider';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
+    }
+
+    private function setupHomeCategoryImageUpload()
+    {
+        $this->rules = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+        ];
+
+        $this->uploadOptoins['path'] = '/home/categories';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
+    }
+
+    private function setupHomeBrandImageUpload()
+    {
+        $this->rules = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+        ];
+
+        $this->uploadOptoins['path'] = '/home/brands';
         $this->uploadOptoins['type'] = 1;
         $this->uploadOptoins['disk'] = 'public';
     }

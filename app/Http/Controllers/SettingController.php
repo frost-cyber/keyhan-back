@@ -51,4 +51,31 @@ class SettingController extends Controller
         ]);
         return response('Ok');
     }
+    public function getHome(){
+        return Setting::where('key' , 'home')->first();
+    }
+    public function updateHome(Request $request){
+        $request->validate([
+            'slider' => 'array',
+            'slider.*.link' => 'required',
+            'slider.*.src' => 'required',
+            'slider.*.alt' => 'required',
+            'sliderBanner' => 'array',
+            'sliderBanner.*.link' => 'required',
+            'sliderBanner.*.src' => 'required',
+            'sliderBanner.*.alt' => 'required',
+            'categories' => 'array',
+            'categories.*.slug' => 'required',
+            'categories.*.src' => 'required',
+            'categories.*.alt' => 'required',
+            'brands' => 'array',
+            'brands.*.slug' => 'required',
+            'brands.*.src' => 'required',
+            'brands.*.alt' => 'required',
+        ]);
+        Setting::where('key' , 'home')->update([
+            'options' => $request->only('slider' , 'sliderBanner' , 'categories' , 'brands'),
+        ]);
+        return response('Ok');
+    }
 }

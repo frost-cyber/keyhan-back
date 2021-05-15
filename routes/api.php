@@ -66,4 +66,6 @@ Route::group(['prefix' => 'settings'] , function (){
    Route::put('header' , [ SettingController::class, 'updateHeader']);
    Route::get('footer' , [ SettingController::class, 'getFooter']);
    Route::put('footer' , [ SettingController::class, 'updateFooter']);
+   Route::get('home' , [ SettingController::class, 'getHome']);
+   Route::put('home' , [ SettingController::class, 'updateHome']);
 });
