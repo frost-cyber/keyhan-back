@@ -72,9 +72,10 @@ class SettingController extends Controller
             'brands.*.slug' => 'required',
             'brands.*.src' => 'required',
             'brands.*.alt' => 'required',
+
         ]);
         Setting::where('key' , 'home')->update([
-            'options' => $request->only('slider' , 'sliderBanner' , 'categories' , 'brands'),
+            'options' => $request->only('slider' , 'sliderBanner' , 'categories' , 'brands' , 'productsRecommended'),
         ]);
         return response('Ok');
     }
