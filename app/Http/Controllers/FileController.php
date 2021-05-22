@@ -8,44 +8,43 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
-class FileController extends Controller
-{
+class FileController extends Controller {
 
     private $rules;
 
     private $uploadOptoins = [];
+    private $customMessages = [];
+    private $customAttributes = [];
 
     private $file;
 
-    public function index()
-    {
+    public function index() {
 
     }
 
-    public function upload(Request $request)
-    {
-        if (!$request->query('for')){
-            throw new BadRequestException("Bad Call");
+    public function upload( Request $request ) {
+        if ( ! $request->query( 'for' ) ) {
+            throw new BadRequestException( "Bad Call" );
         }
 
-        if (!$request->hasFile('file')){
-            throw new BadRequestException("Bad Call");
+        if ( ! $request->hasFile( 'file' ) ) {
+            throw new BadRequestException( "Bad Call" );
         }
 
-        $this->SetupUpload($request->file('file') , $request->query('for'));
+        $this->SetupUpload( $request->file( 'file' ), $request->query( 'for' ) );
 
-        $request->validate($this->rules);
+        $request->validate( $this->rules, $this->customMessages, $this->customAttributes );
 
-        return $this->saveFile($this->storeFile() , new File());
+        return $this->saveFile( $this->storeFile(), new File() );
 
     }
 
-    public function delete(){}
+    public function delete() {
+    }
 
-    private function setupProductImageUpload()
-    {
+    private function setupProductImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
         ];
 
         $this->uploadOptoins['path'] = '/product/images';
@@ -53,10 +52,9 @@ class FileController extends Controller
         $this->uploadOptoins['disk'] = 'public';
     }
 
-    private function setupEditorImageUpload()
-    {
+    private function setupEditorImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
         ];
 
         $this->uploadOptoins['path'] = '/editor/images';
@@ -64,10 +62,9 @@ class FileController extends Controller
         $this->uploadOptoins['disk'] = 'public';
     }
 
-    private function setupBrandLogoUpload()
-    {
+    private function setupBrandLogoUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
         ];
 
         $this->uploadOptoins['path'] = '/brands/logo';
@@ -75,63 +72,73 @@ class FileController extends Controller
         $this->uploadOptoins['disk'] = 'public';
     }
 
-    private function setupArticleThumbnailUpload()
-    {
-        $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+    private function setupArticleThumbnailUpload() {
+        $this->rules                 = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg|dimensions:ratio=8/5',
         ];
-
+        $this->customAttributes      = [ 'file' => 'شاخص' ];
         $this->uploadOptoins['path'] = '/article/images';
         $this->uploadOptoins['type'] = 1;
         $this->uploadOptoins['disk'] = 'public';
     }
 
-    private function SetupUpload(UploadedFile $file , string $for){
-        $for = \Str::Studly($for);
+    private function setupProfileAvatarUpload() {
+        $this->rules                 = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
+        ];
+        $this->customAttributes      = [ 'file' => 'شاخص' ];
+        $this->uploadOptoins['path'] = '/profile/images';
+        $this->uploadOptoins['type'] = 3;
+        $this->uploadOptoins['disk'] = 'public';
+    }
 
-        $this->file = $file;
-        $this->uploadOptoins['name']= $file->getBasename();
-        $this->uploadOptoins['extension']= $file->getExtension();
+    private function SetupUpload( UploadedFile $file, string $for ) {
+        $for = \Str::Studly( $for );
+
+        $this->file                       = $file;
+        $this->uploadOptoins['name']      = $file->getBasename();
+        $this->uploadOptoins['extension'] = $file->getExtension();
 
         $methods = [
             'ProductImage',
             'EditorImage',
             'BrandLogo',
-            'ArticleThumbnail'
+            'ArticleThumbnail',
+            'ProfileAvatar',
         ];
 
-        if (!in_array($for , $methods)){
-            throw new \BadFunctionCallException("Failed");
+        if ( ! in_array( $for, $methods ) ) {
+            throw new \BadFunctionCallException( "Failed" );
         }
 
         $this->{"setup{$for}Upload"}();
     }
 
-    private function saveFile(array $data ,File $file): File {
-    $file->name = $data['name'];
-    $file->extension = $data['extension'];
-    $file->type = $data['type'];
-    $file->path = $data['path'];
-    $file->link = $data['link'];
+    private function saveFile( array $data, File $file ): File {
+        $file->name      = $data['name'];
+        $file->extension = $data['extension'];
+        $file->type      = $data['type'];
+        $file->path      = $data['path'];
+        $file->link      = $data['link'];
 
-    $file->save();
+        $file->save();
 
-    return $file;
-}
+        return $file;
+    }
 
     private function storeFile(): array {
         $file = $this->file->storeAs(
-            $this->uploadOptoins['path']??'/',
+            $this->uploadOptoins['path'] ?? '/',
             $this->file->hashName(),
-            $this->uploadOptoins['disk']??[] ,
+            $this->uploadOptoins['disk'] ?? [],
         );
 
         return [
-            'name' => $this->file->getClientOriginalName(),
+            'name'      => $this->file->getClientOriginalName(),
             'extension' => $this->file->extension(),
-            'type' => $this->uploadOptoins['type'],
-            'path' => $file,
-            'link' => Storage::disk($this->uploadOptoins['disk'])->url($file)
+            'type'      => $this->uploadOptoins['type'],
+            'path'      => $file,
+            'link'      => Storage::disk( $this->uploadOptoins['disk'] )->url( $file ),
         ];
     }
 }

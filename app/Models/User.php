@@ -10,7 +10,6 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable {
     use HasFactory, Notifiable, HasApiTokens, MustVerifyEmail;
-
     const RELATIONS = [
         'productsWishlist',
         'carts',
@@ -23,6 +22,9 @@ class User extends Authenticatable {
      */
     protected $fillable = [
         'name',
+        'last_name',
+        'phone',
+        'national_code',
         'email',
         'password',
         'mobile',
@@ -74,5 +76,15 @@ class User extends Authenticatable {
 
     public function currentCart(): Cart{
         return $this->carts()->where('status', 0)->firstOrNew();
+    }
+
+    public function files(){
+        return $this->morphToMany(File::Class , 'fileable' , 'fileables');
+    }
+    public function addresses(){
+        return $this->hasMany(Address::class);
+    }
+    public function getAvatarAttribute(){
+        return $this->files[0] ?? [] ;
     }
 }

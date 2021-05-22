@@ -48,14 +48,27 @@ Route::put('product/comments/{comment}/toggleConfirm',[ProductCommentController:
 Route::post('cart/add');
 
 //-- Blog --//
-Route::apiResource('articles', ArticleController::class)->scoped(['article' =>'slug']);
+Route::apiResource('articles', ArticleController::class)->whereNumber('article');
+Route::get('articles/{slug}',[ArticleController::class,'show']);
 Route::get('tags',[ArticleController::class , 'tags']);
 Route::apiResource('articleCategories' , ArticleCategoryController::class)->parameters(['articleCategories' => 'category']);
 Route::get('categoryArticle','\App\Http\Controllers\ArticleCategoryController@categoryArticle');
 Route::apiResource('articleComments' , ArticleCommentController::class)->parameters(['articleComments'=>'comment'])->scoped(['comment'=>'id']);
-Route::apiResource('articleComments' , ArticleCommentController::class)->scoped(['comment'=>'id']);
 Route::put('articleComments/{comment}/toggleConfirm',[ArticleCommentController::class , 'toggleConfirm']);
+//--Profile--//
+Route::group(['prefix'=>'profile/'],function (){
+    Route::get('user',[\App\Http\Controllers\ProfileController::class,'user']);
+    Route::match(['put','patch'],'update',[\App\Http\Controllers\ProfileController::class,'update']);
+    Route::put('update/avatar',[\App\Http\Controllers\ProfileController::class,'updateAvatar']);
+    Route::put('password',[\App\Http\Controllers\ProfileController::class,'password']);
+    Route::group(['prefix'=>'address'],function (){
+        Route::get('',[\App\Http\Controllers\AddressController::class,'index']);
+        Route::post('',[\App\Http\Controllers\AddressController::class,'store']);
+        Route::delete('/{address}',[\App\Http\Controllers\AddressController::class,'delete']);
+        Route::put('/{address}',[\App\Http\Controllers\AddressController::class,'update']);
+    });
 
+});
 
 // App //
 Route::group(['prefix' => 'files'] , function(){
