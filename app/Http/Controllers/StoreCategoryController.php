@@ -18,12 +18,12 @@ class StoreCategoryController extends Controller
     public function index(Request $request)
     {
         $query = Category::query()->whereType(Category::TYPE_STORE);
-
-        if ($request->has('with') && !count(array_diff($request->input('with') , Category::RELATIONS))) {
-            $query = $query->with($request->input('with'));
+        $with = is_array($request->input('with'))?$request->input('with'):[$request->input('with')];
+        if ($request->has('with') && !count(array_diff( $with, Category::RELATIONS))) {
+            $query = $query->with($with);
         }
 
-        if ($request->has('with') && in_array('parents' , $request->input('with'))){
+        if ($request->has('with') && in_array('parents' , $with)){
             $query = $query->where('parent_id' ,(int) $request->input('children'));
         }
 
