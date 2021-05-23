@@ -109,7 +109,6 @@ class RegisterController extends Controller
         $this->validationRequest();
 
         $data = [
-            'name' => 'نام خود را وارد نمایید',
             'password' => \Hash::make($request->input('password')),
             session('usernameType') => $request->input('username'),
             session('usernameType').'_verified_at' => now(),
