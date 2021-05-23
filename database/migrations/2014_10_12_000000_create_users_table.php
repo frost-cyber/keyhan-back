@@ -15,9 +15,12 @@ class CreateUsersTable extends Migration {
 		Schema::create( 'users' , function( Blueprint $table ) {
 			$table->id();
 			$table->string( 'name' )->nullable();
+			$table->string( 'last_name' )->nullable();
 			$table->string( 'email' )->unique()->nullable();
 			$table->timestamp( 'email_verified_at' )->nullable();
-            $table->string('mobile' , 15)->unique()->nullable();
+            $table->string('mobile',10)->unique()->nullable();
+            $table->string('phone',10)->unique()->nullable();
+            $table->string('national_code',10)->unique()->nullable();
             $table->timestamp('mobile_verified_at')->nullable();
             $table->string('avatar')->nullable();
             $table->boolean('is_admin')->default(FALSE);

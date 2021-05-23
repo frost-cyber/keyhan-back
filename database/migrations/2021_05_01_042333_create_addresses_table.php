@@ -18,11 +18,13 @@ class CreateAddressesTable extends Migration
             $table->foreignId('user_id')->index();
 
             $table->string('name')->nullable();
-            $table->integer('mobile')->nullable();
-            $table->integer('phone')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('mobile',10)->nullable();
+            $table->string('phone',10)->nullable();
             $table->string('state' , 15);
             $table->string('city' , 15);
             $table->text('address');
+            $table->string('email')->nullable();
             $table->integer('postcode')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
