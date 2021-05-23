@@ -10,6 +10,19 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class FileController extends Controller {
 
+    const METHODS = [
+        'ProductImage',
+        'EditorImage',
+        'BrandLogo',
+        'ArticleThumbnail',
+        'SettingSiteLogo',
+        'SettingLicenseImage',
+        'HomeSliderImage',
+        'HomeBrandImage',
+        'HomeCategoryImage',
+        'ProfileAvatar',
+    ];
+
     private $rules;
 
     private $uploadOptoins = [];
@@ -52,6 +65,36 @@ class FileController extends Controller {
         $this->uploadOptoins['disk'] = 'public';
     }
 
+    private function setupHomeSliderImageUpload() {
+        $this->rules = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+        ];
+
+        $this->uploadOptoins['path'] = '/home/slider';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
+    }
+
+    private function setupHomeCategoryImageUpload() {
+        $this->rules = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+        ];
+
+        $this->uploadOptoins['path'] = '/home/categories';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
+    }
+
+    private function setupHomeBrandImageUpload() {
+        $this->rules = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+        ];
+
+        $this->uploadOptoins['path'] = '/home/brands';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
+    }
+
     private function setupEditorImageUpload() {
         $this->rules = [
             'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
@@ -82,11 +125,31 @@ class FileController extends Controller {
         $this->uploadOptoins['disk'] = 'public';
     }
 
+    private function setupSettingSiteLogoUpload() {
+        $this->rules = [
+            'file' => 'required|mimetypes:text/plain,image/jpg,image/png,image/jpeg,image/svg,image/svg+xml'
+        ];
+
+        $this->uploadOptoins['path'] = '/logo';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
+    }
+
+    private function setupSettingLicenseImageUpload() {
+        $this->rules = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+        ];
+
+        $this->uploadOptoins['path'] = '/licenses';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
+    }
+
     private function setupProfileAvatarUpload() {
         $this->rules                 = [
             'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
         ];
-        $this->customAttributes      = [ 'file' => 'شاخص' ];
+        $this->customAttributes      = [ 'file' => 'آواتار' ];
         $this->uploadOptoins['path'] = '/profile/images';
         $this->uploadOptoins['type'] = 3;
         $this->uploadOptoins['disk'] = 'public';
@@ -95,19 +158,11 @@ class FileController extends Controller {
     private function SetupUpload( UploadedFile $file, string $for ) {
         $for = \Str::Studly( $for );
 
-        $this->file                       = $file;
-        $this->uploadOptoins['name']      = $file->getBasename();
         $this->uploadOptoins['extension'] = $file->getExtension();
+        $this->uploadOptoins['name']      = $file->getBasename();
+        $this->file                       = $file;
 
-        $methods = [
-            'ProductImage',
-            'EditorImage',
-            'BrandLogo',
-            'ArticleThumbnail',
-            'ProfileAvatar',
-        ];
-
-        if ( ! in_array( $for, $methods ) ) {
+        if ( ! in_array( $for, static::METHODS ) ) {
             throw new \BadFunctionCallException( "Failed" );
         }
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreCategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,9 +45,6 @@ Route::get('products/toggle_withlist/{product:slug}', [ProductController::class 
 Route::apiResource('product/comments' , ProductCommentController::class)->parameters(['product/comments' => 'comment']);
 Route::put('product/comments/{comment}/toggleConfirm',[ProductCommentController::class , 'toggleConfirm']);
 
-
-Route::post('cart/add');
-
 //-- Blog --//
 Route::apiResource('articles', ArticleController::class)->whereNumber('article');
 Route::get('articles/{slug}',[ArticleController::class,'show']);
@@ -73,4 +71,13 @@ Route::group(['prefix'=>'profile/'],function (){
 // App //
 Route::group(['prefix' => 'files'] , function(){
     Route::post('upload' , [FileController::class , 'upload']);
+});
+// Settings //
+Route::group(['prefix' => 'settings'] , function (){
+   Route::get('header' , [ SettingController::class, 'getHeader']);
+   Route::put('header' , [ SettingController::class, 'updateHeader']);
+   Route::get('footer' , [ SettingController::class, 'getFooter']);
+   Route::put('footer' , [ SettingController::class, 'updateFooter']);
+   Route::get('home'   , [ SettingController::class, 'getHome']);
+   Route::put('home'   , [ SettingController::class, 'updateHome']);
 });
