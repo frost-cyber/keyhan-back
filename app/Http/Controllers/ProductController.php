@@ -24,6 +24,10 @@ class ProductController extends Controller {
     public function index( Request $request ) {
         $products = Product::query();
 
+        if ($request->has('type')){
+            $products = $products->where('type' , (int) request('type'));
+        }
+
         $with = ( is_array( $request->input( 'with' ) ) ? $request->input( 'with' ) : [ $request->input( 'with' ) ] );
 
         if ( $request->has( 'with' ) && ! count( array_diff( $with, Product::ALL_RELATIONS() ) ) ) {
@@ -71,6 +75,35 @@ class ProductController extends Controller {
             }
         }
 
+        if ( $request->has( 'categories' ) ) {
+            $categories = Category::whereIn( 'slug', request( 'categories' ) )->get('id');
+            function getIds( $model, $relation ) {
+                $ids = [ $model->id ];
+                if ( ! $model->$relation ) {
+                    return $ids;
+                }
+                foreach ( $model->$relation as $value ) {
+                    array_push( $ids, ...getIds( $value, $relation ) );
+                }
+
+                return $ids;
+            }
+            if ( $categories ) {
+                $categoriesID = [];
+                foreach ($categories as $cat ){
+                    array_push($categoriesID , ...getIds($cat , 'children'));
+                }
+                $products = $products->whereHas( 'categories', function ( Builder $query ) use ( $categoriesID ) {
+                    return $query->whereIn( 'id', $categoriesID );
+                } );
+            }
+        }
+
+        if ($request->has( 'products' )) {
+            $productsSlug = is_array($request->input('products'))? $request->input('products'):[$request->input('products')];
+            $products = $products->orWhereIn('slug' , $productsSlug);
+        }
+
         if ( $request->has( 'brands' ) ) {
             $brands   = ( is_array( $request->input( 'brands' ) ) ? $request->input( 'brands' ) : [ $request->input( 'brands' ) ] );
             $products = $products->whereHas( 'brand', function ( Builder $query ) use ( $brands ) {
@@ -81,6 +114,7 @@ class ProductController extends Controller {
         if ( $request->has( 'search' ) ) {
             $products = $products->where( 'name', 'like', "%{$request->input('search')}%" );
         }
+
         $products = $products->orderByDesc(
             ( new \App\Models\ProductVariant )->select( 'selling_price' )
                                               ->whereColumn( 'product_id', 'products.id' )

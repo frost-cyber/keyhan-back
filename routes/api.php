@@ -59,13 +59,12 @@ Route::put('articleComments/{comment}/toggleConfirm',[ArticleCommentController::
 Route::group(['prefix' => 'files'] , function(){
     Route::post('upload' , [FileController::class , 'upload']);
 });
-
 // Settings //
 Route::group(['prefix' => 'settings'] , function (){
    Route::get('header' , [ SettingController::class, 'getHeader']);
    Route::put('header' , [ SettingController::class, 'updateHeader']);
    Route::get('footer' , [ SettingController::class, 'getFooter']);
    Route::put('footer' , [ SettingController::class, 'updateFooter']);
-   Route::get('home' , [ SettingController::class, 'getHome']);
-   Route::put('home' , [ SettingController::class, 'updateHome']);
+   Route::get('home'   , [ SettingController::class, 'getHome']);
+   Route::put('home'   , [ SettingController::class, 'updateHome']);
 });
