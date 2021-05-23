@@ -75,7 +75,7 @@ class SettingController extends Controller
 
         ]);
         Setting::where('key' , 'home')->update([
-            'options' => $request->only('slider' , 'sliderBanner' , 'categories' , 'brands' , 'productsRecommended'),
+            'options' => $request->only('slider' , 'sliderBanners' , 'categories' , 'brands' , 'productsRecommended'),
         ]);
         return response('Ok');
     }
