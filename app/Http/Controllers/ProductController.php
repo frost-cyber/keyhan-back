@@ -36,7 +36,8 @@ class ProductController extends Controller {
         }
 
         if ( request()->has( 'condition' ) ) {
-            $products = $products->where( 'condition', (int) request( 'condition' ) );
+            $conditions=array_map(fn($val )=>(boolean) $val,request( 'condition' ));
+            $products = $products->whereIn( 'condition', $conditions);
         } else {
             $products = $products->where( 'condition', 1 );
         }
@@ -173,9 +174,15 @@ class ProductController extends Controller {
     }
 
     public function toggleWishlist(Product $product){
+        auth()->loginUsingId(5);
         try{
-            auth()->user()->productsWishlist()->sync($product);
-            return response('successfully' );
+            $wish=auth()->user()->productsWishlist()->where('id',$product->id)->first();
+            if($wish){
+                auth()->user()->productsWishlist()->detach($product->id);
+                return response('Deatached');
+            }
+            auth()->user()->productsWishlist()->attach($product->id);
+            return response('Attached');
         }catch ( \Exception $e){
             return $e;
         }
