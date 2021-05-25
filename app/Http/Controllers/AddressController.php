@@ -36,7 +36,7 @@ class AddressController extends Controller
             'postcode'         => 'required|max:10',
 
         ],[],[
-            'postcode' =>'کد پستی'
+            'postcode' =>'کد پستی',
         ]);
         Auth::user()->addresses()->create($request->all());
 
@@ -55,9 +55,9 @@ class AddressController extends Controller
             'city'       => 'required',
             'postcode'         => 'required|max:10',
         ],[],[
-            'postcode'=>'کد پستی'
+            'postcode'=>'کد پستی',
         ]);
-        $address->update($request->all(););
+        $address->update($request->all());
         return response('update address successfully',200);
     }
 }
