@@ -26,5 +26,8 @@ class WishlistController extends Controller
         return $query->get();
 
     }
+    public function lastWishlist(Request $request){
+     return auth()->user()->productsWishlist()->limit(3)->with(['files','variants'])->get();
+    }
 
 }

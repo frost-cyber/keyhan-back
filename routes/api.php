@@ -66,6 +66,7 @@ Route::group(['prefix'=>'profile/'],function (){
         Route::put('/{address}',[\App\Http\Controllers\AddressController::class,'update']);
     });
     Route::get('wishlist',[\App\Http\Controllers\WishlistController::class,'index']);
+    Route::get('lastWishlist',[\App\Http\Controllers\WishlistController::class,'lastWishlist']);
 
 });
 
