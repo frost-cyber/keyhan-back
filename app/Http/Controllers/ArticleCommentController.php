@@ -84,3 +84,4 @@ class ArticleCommentController extends Controller
         return $comment;
     }
 }
+
