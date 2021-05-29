@@ -75,11 +75,14 @@ Route::group(['prefix' => 'files'], function () {
     Route::post('upload', [FileController::class, 'upload']);
 });
 // Settings //
-Route::post('advice', [\App\Http\Controllers\AdviceController::class, 'storeAdvice']);
-Route::get('showallAdvices', [\App\Http\Controllers\AdviceController::class, 'showAdvice']);
-Route::delete('delete/{advice}', [\App\Http\Controllers\AdviceController::class, 'deleteAdvice']);
-Route::put('advice/{advice}/toggleCheck', [\App\Http\Controllers\AdviceController::class, 'toggleCheck']);
-
+Route::group(['prefix'=>'advices'],function(){
+    Route::post('/', [\App\Http\Controllers\AdviceController::class, 'storeAdvice']);
+    Route::get('/', [\App\Http\Controllers\AdviceController::class, 'showAdvice']);
+    Route::delete('/{advice}', [\App\Http\Controllers\AdviceController::class, 'deleteAdvice']);
+    Route::put('/{advice}/toggleCheck', [\App\Http\Controllers\AdviceController::class, 'toggleCheck']);
+});
+Route::apiResource('pages',\App\Http\Controllers\PageController::class)->whereNumber('page');
+Route::get('pages/{slug}',[\App\Http\Controllers\PageController::class,'show']);
 Route::group(['prefix' => 'settings'], function () {
     Route::get('header', [SettingController::class, 'getHeader']);
     Route::put('header', [SettingController::class, 'updateHeader']);
