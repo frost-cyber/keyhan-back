@@ -38,7 +38,7 @@ class ArticleController extends Controller {
 
         if (request()->has('sort')){
             $sort = request('sort');
-            $articles = $articles->orderBy(substr($sort , 1,count($sort)) , str_starts_with($sort , '+') ? 'asc' : 'desc');
+            $articles = $articles->orderBy(substr($sort , 1) , str_starts_with($sort , '+') ? 'asc' : 'desc');
         }
 
         if ( $request->has( 'pagination' ) ) {
