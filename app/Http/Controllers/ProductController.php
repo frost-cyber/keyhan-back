@@ -202,7 +202,7 @@ class ProductController extends Controller {
         $product->review       = $data['review'];
         $product->short_review = $data['short_review'];
         $product->description  = $data['description'] ?? NULL;
-        $product->is_virtual   = $data['type'] == 2;
+        $product->is_virtual   = $data['type'] == 3;
         $product->brand_id     = $data['brand_id'] ?? NULL;
         $product->published_at = $data['published_at'] ?? NULL;
 
