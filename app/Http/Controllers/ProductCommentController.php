@@ -34,7 +34,7 @@ class ProductCommentController extends Controller
             'body'  => 'required' ,
             'name'  => 'required|min:3' ,
             'email' => 'required|email',
-            'article_id' => 'required|exists:articles,id',
+            'product_id' => 'required|exists:products,id',
             'parent_id' => 'nullable|exists:comments,id'
         ];
 

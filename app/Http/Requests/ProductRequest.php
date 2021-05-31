@@ -39,7 +39,7 @@ class ProductRequest extends FormRequest {
             'slug'         => [ 'required', 'unique:products' ],
             'sku'          => [
                 'required',
-                'regex:/^[A-Z0-9]{6}/i',
+                'regex:/^[A-Z0-9]{6}$/',
                 'unique:products',
             ],
             'short_review' => 'required',
@@ -57,7 +57,7 @@ class ProductRequest extends FormRequest {
         return array_merge(
             $rules,
             $this->links(),
-            $this->attributes(),
+            $this->productAttributes(),
             $this->categories(),
             $this->images(),
             $this->variants(),
@@ -79,7 +79,7 @@ class ProductRequest extends FormRequest {
         return [];
     }
 
-    public function attributes() {
+    public function productAttributes() {
         return [
             'attributes'      => 'required|array',
             'attributes.*.id' => 'required|integer|min:1',
@@ -116,6 +116,11 @@ class ProductRequest extends FormRequest {
             'variants.*.wholesale_price'   => 'nullable|integer',
             'variants.*.minimum_wholesale' => 'nullable|integer',
             'variants.*.inventory'         => 'required|integer',
+        ];
+    }
+    public function attributes(){
+        return [
+            'sku' => 'کد محصول'
         ];
     }
 

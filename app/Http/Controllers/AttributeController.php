@@ -32,8 +32,8 @@ class AttributeController extends Controller
             $attributes = $attributes->whereType((int) request('type'));
         }
 
-        if (request()->has('name')){
-            $attributes = $attributes->where('is_variable' , (boolean)request( 'name'));
+        if (request()->has('is_variable')){
+            $attributes = $attributes->where('is_variable' , (boolean)request( 'is_variable'));
         }
         return $attributes->get();
     }

@@ -217,7 +217,7 @@ class ProductController extends Controller {
             $VariantIndex = array_key_exists( 'variant_index', $image ) ? $image['variant_index'] : FALSE;
             $Variant      = array_key_exists( (int) $VariantIndex, $data['variants'] ) ? $data['variants'][ (int) $VariantIndex ] : FALSE;
 
-            if ( $VariantIndex === NULL || $VariantIndex === '' || ! $Variant || (int) $data['type'] !== 2 ) {
+            if ( in_array($VariantIndex , [NULL , '', FALSE] , TRUE)  || (int) $data['type'] !== 2 ) {
                 $productImages[] = $image;
                 continue;
             }

@@ -31,6 +31,10 @@ class AttributeRequest extends FormRequest
             'is_variable' => 'required|boolean' ,
         ];
 
+        if($this->has('routeCreate')){
+           $roles['name'] = '|unique:attributes';
+        }
+
         $roles['type'] = [
             'required' ,
             Rule::in([Attribute::TYPE_SIMPLE , Attribute::TYPE_COLOR , Attribute::TYPE_UNIT]) ,
