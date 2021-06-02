@@ -19,7 +19,7 @@ class CreateCartProductsTable extends Migration
             $table->foreignId('product_id');
             $table->foreignId('product_variant_id');
 
-            $table->tinyInteger('quantity')->default(1);
+            $table->smallInteger('quantity')->default(1);
             $table->timestamps();
 
             $table->foreign('cart_id')->references('id')->on('carts')->cascadeOnDelete()->cascadeOnUpdate();

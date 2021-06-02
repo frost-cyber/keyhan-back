@@ -44,6 +44,15 @@ Route::get('products/{product:slug}/toggle_withlist', [ProductController::class,
 
 Route::apiResource('product/comments', ProductCommentController::class)->parameters(['product/comments' => 'comment']);
 Route::put('product/comments/{comment}/toggleConfirm', [ProductCommentController::class, 'toggleConfirm']);
+Route::group(['prefix'=>'carts'],function (){
+    Route::group(['prefix'=>'currentCart'],function(){
+        Route::post('add',[\App\Http\Controllers\CartController::class,'addToCart']);
+        Route::get('',[\App\Http\Controllers\CartController::class,'currentCart']);
+        Route::get('{productvariant:id}', [\App\Http\Controllers\CartController::class, 'removeFromCart']);
+
+    });
+
+});
 
 //-- Blog --//
 Route::apiResource('articles', ArticleController::class)->whereNumber('article');
