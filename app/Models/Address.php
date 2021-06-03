@@ -10,6 +10,10 @@ class Address extends Model {
 
     protected $fillable = [ 'name','email','last_name', 'mobile', 'phone', 'state', 'city', 'address', 'postcode', 'description' ];
     public function user(){
-        return $this->belongsTo(Address::class);
+        return $this->belongsTo(User::class);
     }
+    public function carts(){
+        return $this->hasMany(Cart::class);
+    }
+
 }

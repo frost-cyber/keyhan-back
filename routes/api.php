@@ -49,7 +49,7 @@ Route::group(['prefix'=>'carts'],function (){
         Route::post('add',[\App\Http\Controllers\CartController::class,'addToCart']);
         Route::get('',[\App\Http\Controllers\CartController::class,'currentCart']);
         Route::get('{productvariant:id}', [\App\Http\Controllers\CartController::class, 'removeFromCart']);
-
+        Route::post('setAddress/{address}',[\App\Http\Controllers\CartController::class,'setAddress']);
     });
 
 });
