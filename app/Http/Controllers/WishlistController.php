@@ -7,12 +7,6 @@ use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
-    public function __construct()
-    {
-        Auth::loginUsingId(5);
-
-    }
-
     public function index(Request $request)
     {
         $query = auth()->user()->productsWishlist()->with(['files', 'variants']);

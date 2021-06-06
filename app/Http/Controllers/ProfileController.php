@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class ProfileController extends Controller {
     public function user() {
-        Auth::loginUsingId( 5 );
         if ( Auth::check() ) {
             return Auth::user()->load( 'files' );
         } else {

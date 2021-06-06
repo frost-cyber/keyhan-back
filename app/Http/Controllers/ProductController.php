@@ -174,7 +174,6 @@ class ProductController extends Controller {
     }
 
     public function toggleWishlist(Product $product){
-        auth()->loginUsingId(5);
         try{
             $wish=auth()->user()->productsWishlist()->where('id',$product->id)->first();
             if($wish){

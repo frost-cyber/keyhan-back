@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class AddressController extends Controller
 {
     public function index(){
-        Auth::loginUsingId( 5 );
         if ( Auth::check() ) {
-
             $addresses = Auth::user()->addresses;
             return $addresses;
         } else {
