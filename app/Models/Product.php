@@ -47,7 +47,7 @@ class Product extends Model {
     }
 
     public function files() {
-        return $this->morphToMany( File::class, 'fileable', 'fileables' );
+        return $this->morphToMany( File::class, 'fileable', 'fileables' )->withPivot(['default']);
     }
 
     public function links() {

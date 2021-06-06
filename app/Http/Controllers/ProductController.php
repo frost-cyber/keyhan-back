@@ -217,7 +217,7 @@ class ProductController extends Controller {
             $Variant      = array_key_exists( (int) $VariantIndex, $data['variants'] ) ? $data['variants'][ (int) $VariantIndex ] : FALSE;
 
             if ( in_array($VariantIndex , [NULL , '', FALSE] , TRUE)  || (int) $data['type'] !== 2 ) {
-                $productImages[] = $image;
+                $productImages[$image['id']] = ['default' => $image['id'] == $data['default_image']];
                 continue;
             }
 
@@ -244,7 +244,7 @@ class ProductController extends Controller {
     }
 
     protected function syncImages( array $imagesData, Product $product ) {
-        $product->files()->sync( collect( $imagesData )->pluck( 'id' )->toArray() );
+        $product->files()->sync(  $imagesData  );
     }
 
     protected function syncAttributes( array $attributesData, Product $product ) {
