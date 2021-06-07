@@ -53,7 +53,10 @@ Route::group(['prefix'=>'carts'],function (){
     });
 
 });
-
+//--User--//
+Route::apiResource('users',UserController::class)->except('store');
+//--admin--//
+Route::apiResource('admins',\App\Http\Controllers\AdminController::class)->parameters(['admins'=>'user']);
 //-- Blog --//
 Route::apiResource('articles', ArticleController::class)->whereNumber('article');
 Route::get('articles/{slug}', [ArticleController::class, 'show']);
