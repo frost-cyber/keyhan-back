@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Permission;
 class UserController extends Controller
 {
     public function currentUser(){
-        return auth()->user();
+        return auth()->user()->load(['files']);
     }
     public function index()
     {
