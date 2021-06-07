@@ -61,7 +61,7 @@ class ProfileController extends Controller {
                 'required',
                 function ( $attribute, $value, $fail ) {
                     if ( ! \Hash::check( $value, \Auth::user()->password ) ) {
-                        $fail( 'پسسورد قبلی اشتباه است' );
+                        $fail( 'پسورد قبلی اشتباه است' );
                     }
                 },
             ],
