@@ -72,7 +72,21 @@ class LoginController extends Controller
         $this->passwordValidationParams();
         $this->validateRequest();
 
-        if (!auth()->attempt($this->credentials())) {
+        $isAdmin = User::where($this->username(), \request('username'))->where('is_admin' , TRUE)->exists();
+
+        if (request()->has('admin')) {
+            if ( ! $isAdmin && ! auth()->attempt( $this->credentials() ) ) {
+                throw ValidationException::withMessages( [
+                    'username' => [ trans( 'auth.failed' ) ],
+                ] );
+            }
+
+            return response( [
+                'message' => 'Login Successfully',
+            ] );
+        }
+
+        if ($isAdmin && !auth()->attempt($this->credentials())) {
             throw ValidationException::withMessages([
                 'username' => [trans('auth.failed')],
             ]);
