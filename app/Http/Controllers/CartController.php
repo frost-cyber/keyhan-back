@@ -57,7 +57,10 @@ class CartController extends Controller {
 	}
 
 	public function currentCart( Request $request ) {
-		$cart = auth()->user()->currentCart();
+		$cart = new Cart();
+		if ( auth()->check() ) {
+			$cart = auth()->user()->currentCart();
+		}
 		if ( $request->has( 'withCount' ) ) {
 			$cart = $cart->loadCount( $request->withCount );
 		}
@@ -70,14 +73,16 @@ class CartController extends Controller {
 
 	public function removeFromCart( ProductVariant $productvariant ) {
 		auth()->user()->currentCart()->productVariants()->detach( $productvariant->id );
+
 		return response( 'Deatached' );
 	}
 
-	public function setAddress(Address $address){
-		$cart=auth()->user()->currentCart();
-		$cart->address()->associate($address);
+	public function setAddress( Address $address ) {
+		$cart = auth()->user()->currentCart();
+		$cart->address()->associate( $address );
 		$cart->save();
-		return response('set address successfully',200);
+
+		return response( 'set address successfully', 200 );
 	}
 
 }
