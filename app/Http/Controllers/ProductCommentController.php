@@ -11,9 +11,11 @@ class ProductCommentController extends Controller
     public function index()
     {
         $comments = Comment::whereHasMorph('commentable' , Product::class)->with('commentable');
-
+        if(request()->has('limit')){
+        	$comments=$comments->limit(request('limit'));
+        }
         if (\request()->has('confirmed') && \request('confirmed') >= 0) {
-            $comments->where('confirmed' , (boolean)request('confirmed'));
+            $comments=$comments->where('confirmed' , (boolean)request('confirmed'));
         }
         return $comments->latest()->get();
     }
