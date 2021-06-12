@@ -95,6 +95,7 @@ Route::group( [ 'prefix' => 'files' ], function () {
     Route::post( 'upload', [ FileController::class, 'upload' ] );
 } );
 Route::apiResource( 'roles', RoleController::class );
+Route::get('permissions',[RoleController::class,'permissions']);
 // Settings //
 Route::group( [ 'prefix' => 'advices' ], function () {
     Route::post( '/', [ AdviceController::class, 'storeAdvice' ] );
