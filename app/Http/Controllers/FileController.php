@@ -18,6 +18,7 @@ class FileController extends Controller {
         'SettingSiteLogo',
         'SettingLicenseImage',
         'HomeSliderImage',
+        'HomeSliderBannerImage',
         'HomeBrandImage',
         'HomeCategoryImage',
         'ProfileAvatar',
@@ -71,6 +72,16 @@ class FileController extends Controller {
         ];
 
         $this->uploadOptoins['path'] = '/home/slider';
+        $this->uploadOptoins['type'] = 1;
+        $this->uploadOptoins['disk'] = 'public';
+    }
+
+    private function setupHomeSliderImageBannerUpload() {
+        $this->rules = [
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+        ];
+
+        $this->uploadOptoins['path'] = '/home/slider/banners';
         $this->uploadOptoins['type'] = 1;
         $this->uploadOptoins['disk'] = 'public';
     }
