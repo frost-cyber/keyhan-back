@@ -53,12 +53,12 @@ Route::get( 'products/{product:slug}/toggle_withlist', [ ProductController::clas
 Route::apiResource( 'product/comments', ProductCommentController::class )->parameters( [ 'product/comments' => 'comment' ] );
 Route::put( 'product/comments/{comment}/toggleConfirm', [ ProductCommentController::class, 'toggleConfirm' ] );
 Route::group( [ 'prefix' => 'carts' ], function () {
-    Route::group( [ 'prefix' => 'currentCart' ], function () {
-        Route::post( 'add', [ CartController::class, 'addToCart' ] );
-        Route::get( '', [ CartController::class, 'currentCart' ] );
-        Route::get( '{productvariant:id}', [ CartController::class, 'removeFromCart' ] );
-        Route::post( 'setAddress/{address}', [ CartController::class, 'setAddress' ] );
-    } );
+	Route::group( [ 'prefix' => 'currentCart' ], function () {
+		Route::post( 'add', [ CartController::class, 'addToCart' ] );
+		Route::get( '', [ CartController::class, 'currentCart' ] );
+		Route::get( '{productvariant:id}', [ CartController::class, 'removeFromCart' ] );
+		Route::post( 'setAddress/{address}', [ CartController::class, 'setAddress' ] );
+	} );
 
 } );
 //--User--//
@@ -75,41 +75,49 @@ Route::apiResource( 'articleComments', ArticleCommentController::class )->parame
 Route::put( 'articleComments/{comment}/toggleConfirm', [ ArticleCommentController::class, 'toggleConfirm' ] );
 //--Profile--//
 Route::group( [ 'prefix' => 'profile/' ], function () {
-    Route::get( 'user', [ ProfileController::class, 'user' ] );
-    Route::match( [ 'put', 'patch' ], 'update', [ ProfileController::class, 'update' ] );
-    Route::put( 'update/avatar', [ ProfileController::class, 'updateAvatar' ] );
-    Route::put( 'password', [ ProfileController::class, 'password' ] );
-    Route::group( [ 'prefix' => 'address' ], function () {
-        Route::get( '', [ AddressController::class, 'index' ] );
-        Route::post( '', [ AddressController::class, 'store' ] );
-        Route::delete( '/{address}', [ AddressController::class, 'delete' ] );
-        Route::put( '/{address}', [ AddressController::class, 'update' ] );
-    } );
-    Route::get( 'wishlist', [ WishlistController::class, 'index' ] );
-    Route::get( 'lastWishlist', [ WishlistController::class, 'lastWishlist' ] );
+	Route::get( 'user', [ ProfileController::class, 'user' ] );
+	Route::match( [ 'put', 'patch' ], 'update', [ ProfileController::class, 'update' ] );
+	Route::put( 'update/avatar', [ ProfileController::class, 'updateAvatar' ] );
+	Route::put( 'password', [ ProfileController::class, 'password' ] );
+	Route::group( [ 'prefix' => 'address' ], function () {
+		Route::get( '', [ AddressController::class, 'index' ] );
+		Route::post( '', [ AddressController::class, 'store' ] );
+		Route::delete( '/{address}', [ AddressController::class, 'delete' ] );
+		Route::put( '/{address}', [ AddressController::class, 'update' ] );
+	} );
+	Route::get( 'wishlist', [ WishlistController::class, 'index' ] );
+	Route::get( 'lastWishlist', [ WishlistController::class, 'lastWishlist' ] );
 
 } );
-
+// Forms //
+Route::group( [ 'prefix' => 'forms' ], function () {
+	Route::group( [ 'prefix' => 'advices' ], function () {
+		Route::post( '/', [ AdviceController::class, 'storeAdvice' ] );
+		Route::get( '/', [ AdviceController::class, 'showAdvice' ] );
+		Route::delete( '/{advice}', [ AdviceController::class, 'deleteAdvice' ] );
+		Route::put( '/{advice}/toggleCheck', [ AdviceController::class, 'toggleCheck' ] );
+	} );
+	Route::group( [ 'prefix' => 'customizations' ], function () {
+		Route::get( '/', [ \App\Http\Controllers\CustomizationController::class, 'index' ] );
+		Route::post( '/', [ \App\Http\Controllers\CustomizationController::class, 'storeCustomization' ] );
+		Route::delete( '/{customization}', [ \App\Http\Controllers\CustomizationController::class, 'deleteCuctomization' ] );
+		Route::put( '/{customization}/toggleStatus', [ \App\Http\Controllers\CustomizationController::class, 'toggleStatus' ] );
+	} );
+} );
 // App //
 Route::group( [ 'prefix' => 'files' ], function () {
-    Route::post( 'upload', [ FileController::class, 'upload' ] );
+	Route::post( 'upload', [ FileController::class, 'upload' ] );
 } );
 Route::apiResource( 'roles', RoleController::class );
-Route::get('permissions',[RoleController::class,'permissions']);
+Route::get( 'permissions', [ RoleController::class, 'permissions' ] );
 // Settings //
-Route::group( [ 'prefix' => 'advices' ], function () {
-    Route::post( '/', [ AdviceController::class, 'storeAdvice' ] );
-    Route::get( '/', [ AdviceController::class, 'showAdvice' ] );
-    Route::delete( '/{advice}', [ AdviceController::class, 'deleteAdvice' ] );
-    Route::put( '/{advice}/toggleCheck', [ AdviceController::class, 'toggleCheck' ] );
-} );
 Route::apiResource( 'pages', PageController::class )->whereNumber( 'page' );
 Route::get( 'pages/{slug}', [ PageController::class, 'show' ] );
 Route::group( [ 'prefix' => 'settings' ], function () {
-    Route::get( 'header', [ SettingController::class, 'getHeader' ] );
-    Route::put( 'header', [ SettingController::class, 'updateHeader' ] );
-    Route::get( 'footer', [ SettingController::class, 'getFooter' ] );
-    Route::put( 'footer', [ SettingController::class, 'updateFooter' ] );
-    Route::get( 'home', [ SettingController::class, 'getHome' ] );
-    Route::put( 'home', [ SettingController::class, 'updateHome' ] );
+	Route::get( 'header', [ SettingController::class, 'getHeader' ] );
+	Route::put( 'header', [ SettingController::class, 'updateHeader' ] );
+	Route::get( 'footer', [ SettingController::class, 'getFooter' ] );
+	Route::put( 'footer', [ SettingController::class, 'updateFooter' ] );
+	Route::get( 'home', [ SettingController::class, 'getHome' ] );
+	Route::put( 'home', [ SettingController::class, 'updateHome' ] );
 } );

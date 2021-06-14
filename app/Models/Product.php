@@ -108,4 +108,7 @@ class Product extends Model {
               ->count( 'wishable_id' )
             , $desc ? 'asc' : 'desc' );
     }
+    public function customizations(){
+    	return $this->hasMany(Customization::class);
+    }
 }
