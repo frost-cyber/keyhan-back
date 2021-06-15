@@ -17,6 +17,7 @@ class SuperAdminSeeder extends Seeder {
             'name'               => 'Admin',
             'mobile'             => '9123456789',
             'email'              => 'admin@admin.com',
+            'is_admin'           => true,
             'email_verified_at'  => Carbon::now(),
             'mobile_verified_at' => Carbon::now(),
             'password'           => \Hash::make('AdminCafeEnergy'),
