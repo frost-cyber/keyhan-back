@@ -27,6 +27,7 @@ class CreateProductsTable extends Migration {
 			$table->longText( 'extra_data' )->nullable();
 			$table->longText( 'default_data' )->nullable()->comment( "اطلاعات پیشفرض محصول جهت لود سریعتر محصول" );
             $table->timestamp('published_at')->nullable();
+            $table->json('meta');
             $table->timestamps();
 			$table->softDeletes();
 

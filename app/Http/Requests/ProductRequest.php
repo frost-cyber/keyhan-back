@@ -16,7 +16,7 @@ class ProductRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
-        return TRUE;
+        return true;
     }
 
     public function validationData() {
@@ -35,18 +35,21 @@ class ProductRequest extends FormRequest {
      */
     public function rules() {
         $rules = [
-            'name'         => 'required',
-            'slug'         => [ 'required', 'unique:products' ],
-            'sku'          => [
+            'name'             => 'required',
+            'slug'             => [ 'required', 'unique:products' ],
+            'sku'              => [
                 'required',
                 'regex:/^[A-Z0-9]{6}$/',
                 'unique:products',
             ],
-            'short_review' => 'required',
-            'description'  => 'required',
-            'review'       => 'required',
-            'type'         => 'required|in:1,2,3',
-            'brand_id'     => 'nullable|exists:brands,id',
+            'short_review'     => 'required',
+            'description'      => 'required',
+            'review'           => 'required',
+            'type'             => 'required|in:1,2,3',
+            'brand_id'         => 'nullable|exists:brands,id',
+            'meta'             => 'array',
+            'meta.keywords'    => 'required',
+            'meta.description' => 'required',
         ];
 
         if ( $id = $this->route( 'product' )?->id ) {
@@ -118,7 +121,8 @@ class ProductRequest extends FormRequest {
             'variants.*.inventory'         => 'required|integer',
         ];
     }
-    public function attributes(){
+
+    public function attributes() {
         return [
             'sku' => 'کد محصول'
         ];

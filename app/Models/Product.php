@@ -18,11 +18,11 @@ class Product extends Model {
 
     const PRODUCT_TYPE_VIRTUAL = 3;
 
-    protected $fillable = [ 'name', 'slug', 'sku', 'short_review', 'description', 'review', 'is_virtual', ];
+    protected $fillable = [ 'name', 'slug', 'sku', 'short_review', 'description', 'review', 'is_virtual', 'meta', ];
 
     const RELATIONS = [ 'attributes', 'variants', 'categories', 'comments', 'brand', 'files', 'links', ];
 
-    protected $casts = [ 'published_at' => 'datetime' ];
+    protected $casts = [ 'published_at' => 'datetime' , 'meta' => 'json' ];
 
     public function comments() {
         return $this->morphMany( Comment::class, 'commentable' );
