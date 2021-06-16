@@ -15,8 +15,6 @@ class ArticleCommentController extends Controller {
 		}
 		if ( \request()->has( 'confirmed' ) && \request( 'confirmed' ) >= 0 ) {
 			$comments = $comments->where( 'confirmed', (boolean) request( 'confirmed' ) );
-		} else {
-			$comments = $comments->where( 'confirmed', true );
 		}
 
 		return $comments->latest()->get();
