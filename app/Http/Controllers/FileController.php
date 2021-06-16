@@ -76,7 +76,7 @@ class FileController extends Controller {
         $this->uploadOptoins['disk'] = 'public';
     }
 
-    private function setupHomeSliderImageBannerUpload() {
+    private function setupHomeSliderBannerImageUpload() {
         $this->rules = [
             'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
         ];
@@ -118,7 +118,7 @@ class FileController extends Controller {
 
     private function setupBrandLogoUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml',
         ];
 
         $this->uploadOptoins['path'] = '/brands/logo';
@@ -128,7 +128,7 @@ class FileController extends Controller {
 
     private function setupArticleThumbnailUpload() {
         $this->rules                 = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg|dimensions:ratio=8/5',
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml',
         ];
         $this->customAttributes      = [ 'file' => 'شاخص' ];
         $this->uploadOptoins['path'] = '/article/images';
