@@ -22,6 +22,7 @@ class Article extends Model
         'slug',
         'image_id',
         'tags',
+	    'meta',
         'comments_count',
         'description',
         'visit_count',
@@ -29,7 +30,7 @@ class Article extends Model
         'category_id',
         'condition'
     ];
-    protected $casts=['tags'=>'array'];
+    protected $casts=['tags'=>'array','meta'=>'json'];
     protected $table = 'articles';
 
 	public static function ALL_RELATIONS() {

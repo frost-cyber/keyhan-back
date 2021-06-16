@@ -59,7 +59,10 @@ class ArticleController extends Controller {
             'tags'         => 'required',
             'status'       => 'required|in:active,deactive',
             'thumbnail'    => 'required|array',
-            'thumbnail.id' => 'required|int|exists:files,id'
+            'thumbnail.id' => 'required|int|exists:files,id',
+            'meta'             => 'array',
+            'meta.keywords'    => 'required',
+            'meta.description' => 'required',
         ] );
         $this->save( $request->all(), new Article() );
 
@@ -88,6 +91,9 @@ class ArticleController extends Controller {
             'slug'         => 'required|unique:articles,slug,' . $article->id,
             'tags'         => 'required',
             'status'       => 'required|in:active,deactive',
+            'meta'             => 'array',
+            'meta.keywords'    => 'required',
+            'meta.description' => 'required',
             'thumbnail'    => 'required|array',
             'thumbnail.id' => 'required|int|exists:files,id'
         ] );
@@ -107,6 +113,7 @@ class ArticleController extends Controller {
         $article->body           = $data['body'];
         $article->description    = $data['description'];
         $article->slug           = $data['slug'];
+        $article->meta           = $data['meta']??NULL;
         $article->tags           = $data['tags'];
         $article->status         = $data['status'];
         $article->comments_count = $data['comments_count'] ?? $article->comments_count ?? 0;
