@@ -12,8 +12,7 @@ class PostController extends Controller {
 	}
 
 	public function store( Request $request ) {
-		$this->validateRequest($request);
-		Post::create($request->validated());
+		Post::create($this->validateRequest($request));
 		return response('create post successfuly',200);
 	}
 
@@ -22,8 +21,7 @@ class PostController extends Controller {
 	}
 
 	public function update( Request $request, Post $post ) {
-		$this->validateRequest($request);
-		$post::update($request->validated());
+		$post::update($this->validateRequest($request));
 		return response('update post successfuly',200);
 	}
 
@@ -33,10 +31,10 @@ class PostController extends Controller {
 		return response('delete post successfuly',200);
 	}
 	private function validateRequest(Request $request){
-		$request->validate([
+		return $request->validate([
 			'name'=>'required',
 			'states'=>'required|array',
-			'states.*'=>'required|integer|digit_bitween:1,31',
+			'states.*'=>'required|integer|digits_between:1,31',
 			'weight'=>'required|array',
 			'is_free'=>'nullable|numeric'
 		]);
