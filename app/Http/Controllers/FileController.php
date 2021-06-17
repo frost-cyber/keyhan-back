@@ -58,7 +58,7 @@ class FileController extends Controller {
 
     private function setupProductImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml',
         ];
 
         $this->uploadOptoins['path'] = '/product/images';
@@ -68,7 +68,7 @@ class FileController extends Controller {
 
     private function setupHomeSliderImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml'
         ];
 
         $this->uploadOptoins['path'] = '/home/slider';
@@ -78,7 +78,7 @@ class FileController extends Controller {
 
     private function setupHomeSliderBannerImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml'
         ];
 
         $this->uploadOptoins['path'] = '/home/slider/banners';
@@ -88,7 +88,7 @@ class FileController extends Controller {
 
     private function setupHomeCategoryImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml'
         ];
 
         $this->uploadOptoins['path'] = '/home/categories';
@@ -98,7 +98,7 @@ class FileController extends Controller {
 
     private function setupHomeBrandImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml'
         ];
 
         $this->uploadOptoins['path'] = '/home/brands';
@@ -108,7 +108,7 @@ class FileController extends Controller {
 
     private function setupEditorImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml',
         ];
 
         $this->uploadOptoins['path'] = '/editor/images';
@@ -148,7 +148,7 @@ class FileController extends Controller {
 
     private function setupSettingLicenseImageUpload() {
         $this->rules = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg'
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml'
         ];
 
         $this->uploadOptoins['path'] = '/licenses';
@@ -158,7 +158,7 @@ class FileController extends Controller {
 
     private function setupProfileAvatarUpload() {
         $this->rules                 = [
-            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg',
+            'file' => 'required|mimetypes:image/jpg,image/png,image/jpeg,image/svg,image/svg+xml',
         ];
         $this->customAttributes      = [ 'file' => 'آواتار' ];
         $this->uploadOptoins['path'] = '/profile/images';
