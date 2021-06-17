@@ -65,6 +65,8 @@ Route::group( [ 'prefix' => 'carts' ], function () {
 Route::apiResource( 'users', UserController::class )->except( 'store' );
 //--admin--//
 Route::apiResource( 'admins', AdminController::class )->parameters( [ 'admins' => 'user' ] );
+//--post--//
+Route::apiResource('posts',\App\Http\Controllers\PostController::class);
 //-- Blog --//
 Route::apiResource( 'articles', ArticleController::class )->whereNumber( 'article' );
 Route::get( 'articles/{slug}', [ ArticleController::class, 'show' ] );
