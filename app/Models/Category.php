@@ -54,4 +54,12 @@ class Category extends Model
     {
         return $this->belongsTo(Category::class , 'parent_id');
     }
+
+    public function products(){
+        return $this->morphedByMany(Product::class , 'categorizable');
+    }
+
+    public function articles(){
+        return $this->morphedByMany(Product::class , 'categorizable');
+    }
 }

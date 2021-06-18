@@ -28,7 +28,7 @@ class ArticleCategoryController extends Controller
                 $query = $query->where('parent_id' ,$category->id);
             }
         }
-        
+
 
         return $query->get();
     }
@@ -95,6 +95,11 @@ class ArticleCategoryController extends Controller
      */
     public function destroy(Category $category): Response
     {
+        if ( $category->articles()->exists() ) {
+            return \response( [
+                'message' => 'The category cannot be removed because it has articles',
+            ], 400 );
+        }
         $category->delete();
 
         return \response([
