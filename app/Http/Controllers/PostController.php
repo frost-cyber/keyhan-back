@@ -8,7 +8,12 @@ use Illuminate\Http\Request;
 class PostController extends Controller {
 
 	public function index() {
-		return Post::latest()->get();
+	    $posts = Post::query();
+	    if (request()->has('state')) {
+            $posts = $posts->whereJsonContains( 'states', (int)request( 'state' ) );
+        }
+	    $posts = $posts->latest();
+		return $posts->get();
 	}
 
 	public function store( Request $request ) {
@@ -30,6 +35,7 @@ class PostController extends Controller {
 		$post->delete();
 		return response('delete post successfuly',200);
 	}
+
 	private function validateRequest(Request $request){
 		return $request->validate([
 			'name'=>'required',
