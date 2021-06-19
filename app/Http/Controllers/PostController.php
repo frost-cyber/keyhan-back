@@ -8,12 +8,17 @@ use Illuminate\Http\Request;
 class PostController extends Controller {
 
 	public function index() {
-	    $posts = Post::query();
-	    if (request()->has('state')) {
-            $posts = $posts->whereJsonContains( 'states', (int)request( 'state' ) );
-        }
-	    $posts = $posts->latest();
-		return $posts->get();
+		$posts = Post::query();
+		if ( request()->has( 'state' ) ) {
+			$posts->whereJsonContains( 'states', (int) \request('state'));
+		}
+		$posts = $posts->latest();
+
+		$posts= $posts->get();
+		if($posts->isEmpty()){
+			$posts=Post::query()->where( 'id', 1 )->get();
+		}
+		return $posts;
 	}
 
 	public function store( Request $request ) {
@@ -39,9 +44,9 @@ class PostController extends Controller {
 	}
 
 	private function validateRequest( Request $request ) {
-		$role           = [
+		$role = [
 			'name'           => 'required',
-			'states'         => 'required|array',
+			'states'         => 'array',
 			'states.*'       => 'required|integer|digits_between:1,31',
 			'weight'         => 'required|array',
 			'weight.*.start' => 'required|numeric',
@@ -49,10 +54,10 @@ class PostController extends Controller {
 			'weight.*.price' => 'required|numeric',
 			'is_free'        => 'nullable|numeric',
 		];
-		
-		$custommesage   = [
+
+		$custommesage = [
 			'weight.*.*.required' => 'این فیلد اجباری است',
-			'weight.*.*.numeric' => 'این فیلد باید عدد یا رشته ای از اعداد باشد',
+			'weight.*.*.numeric'  => 'این فیلد باید عدد یا رشته ای از اعداد باشد',
 		];
 
 		$customatrebute = [
