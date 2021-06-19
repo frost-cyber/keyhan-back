@@ -15,7 +15,8 @@ class ProductVariant extends Model
         'discounted_price' ,
         'wholesale_price' ,
         'minimum_wholesale' ,
-        'inventory' ,
+        'inventory',
+        'weight',
     ];
 
 
