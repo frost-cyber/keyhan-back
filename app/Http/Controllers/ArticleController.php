@@ -40,7 +40,9 @@ class ArticleController extends Controller {
             $sort = request('sort');
             $articles = $articles->orderBy(substr($sort , 1) , str_starts_with($sort , '+') ? 'asc' : 'desc');
         }
-
+		if (request()->has('status')){
+			$articles->where('status',request('status'));
+		}
         if ( $request->has( 'pagination' ) ) {
             $articles = $articles->paginate( '4' );
         } else {
@@ -70,7 +72,7 @@ class ArticleController extends Controller {
     }
 
     public function show( Article $article, $slug = null ) {
-        $article = ! $slug ? $article : Article::where( 'slug', $slug )->where( 'status', 'active' )->first();
+        $article = ! $slug ? $article : Article::where( 'slug', $slug )->where( 'status', 'active' )->firstOrFail();
 
         return $article->load( [
             'comments' => function ( $query ) {
