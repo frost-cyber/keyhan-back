@@ -61,6 +61,9 @@ Route::group( [ 'prefix' => 'carts' ], function () {
 	} );
 
 } );
+Route::group(['prefix'=>'orders'],function (){
+	Route::post('payCart',[\App\Http\Controllers\OrderController::class,'payCart']);
+});
 //--User--//
 Route::apiResource( 'users', UserController::class )->except( 'store' );
 //--admin--//

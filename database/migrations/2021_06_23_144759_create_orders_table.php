@@ -16,14 +16,13 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('address_id');
 
             $table->smallInteger('status')->default(0);
+            $table->string('order_number');
 
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->restrictOnDelete();
-            $table->foreign('address_id')->references('id')->on('addresses')->restrictOnDelete();
         });
     }
 
