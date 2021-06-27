@@ -18,9 +18,9 @@ class CreateShipmentsTable extends Migration
 	        $table->foreignId('order_id');
 	        $table->foreignId('address_id');
 
-            $table->string('tracking_code');
+            $table->string('tracking_code')->nullable();
             $table->string('status');
-	        $table->timestamp('shipments_date');
+	        $table->timestamp('shipments_date')->nullable();
 	        $table->timestamps();
 
 	        $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete();
