@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     use HasFactory;
+    protected $fillable = ['gateway' , 'status' , 'data'];
+    protected $casts = [
+        'data' => 'json'
+    ];
+
+    public function order(){
+        return $this->belongsTo(Order::class);
+    }
 }
