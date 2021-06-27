@@ -13,6 +13,8 @@ class CreateProductOrderTable extends Migration {
 
             $table->bigInteger('purchase_price');
             $table->bigInteger('price');
+            $table->bigInteger('total_price');
+            $table->json('extra')->nullable();
             $table->string('price_type' , 20);
             $table->integer('quantity');
 
