@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     use HasFactory;
-    protected $fillable = ['gateway' , 'status' , 'data'];
+    protected $fillable = ['gateway' , 'status' , 'data','amount'];
     protected $casts = [
         'data' => 'json'
     ];

@@ -20,7 +20,7 @@ class CreatePaymentsTable extends Migration
             $table->string('gateway' , 20);
             $table->string('status', 20);
             $table->json('data');
-
+			$table->bigInteger('amount');
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete();
