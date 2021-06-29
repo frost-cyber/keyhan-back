@@ -77,7 +77,9 @@ class User extends Authenticatable {
 	}
 
 	public function currentCart(): Cart {
-		return $this->carts()->where( 'status', 0 )->firstOrCreate();
+		return $this->carts()->where( 'status', 0 )->firstOr(function (){
+			return $this->carts()->create();
+		});
 	}
 
 	public function files() {

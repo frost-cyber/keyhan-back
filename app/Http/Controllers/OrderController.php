@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Payment as PaymentModel;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\Cart;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 use Shetabit\Multipay\Invoice;
 use Shetabit\Multipay\RedirectionForm;
 use Shetabit\Payment\Facade\Payment;
 
 class OrderController extends Controller {
+	public function __construct() {
+		auth()->loginUsingId(1);
+	}
+
 	public function payCart() {
 		$cart = auth()->user()->currentCart();
 		$this->validateCart( $cart );
@@ -30,9 +36,10 @@ class OrderController extends Controller {
 		$order->payments()->create( [
 			'gateway' => 'زرین پال',
 			'status'  => 'پرداخت نشده',
+			'amount'   => $order->total_price,
 			'data'    => [ 'authority' => $pay['transactionId'] ],
 		] );
-		$cart->delete();
+//		$cart->delete();
 
 		return $pay['redirectForm']->toJson();
 	}
@@ -94,5 +101,30 @@ class OrderController extends Controller {
 			'redirectForm'  => Payment::purchase( $invoice )->pay(),
 			'transactionId' => $invoice->getTransactionId(),
 		];
+	}
+
+	public function checkPayment(Request $request){
+		$payment=PaymentModel::query()->whereJsonContains('data->authority',$request->authority)->firstOrFail();
+		if($request->input('status') == 'NOK'){
+
+		}
+		if ($request->input('status') == 'OK'){
+			try{
+//				$responce=\Http::withHeaders([
+//					'accept' => 'application/json',
+//					'content-type' => 'application/json'
+//				])->post('https://sandbox.zarinpal.com/pg/v4/payment/verify.json',[
+//					"merchant_id"=> "753869421753869421753869421123456789",
+//					'amount'=> $payment->amount,
+//					'authority'=>$request->authority,
+//				]);
+//				dd($responce->body());
+//				dd(Payment::amount((int)$payment->amount)->transactionId($request->authority));
+				$receipt =Payment::amount((int)$payment->amount)->transactionId($request->authority)->verify();
+				dd($receipt);
+			}catch (InvalidPaymentException $exception ){
+					dd($exception);
+			}
+		}
 	}
 }

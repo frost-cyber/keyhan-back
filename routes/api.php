@@ -53,6 +53,8 @@ Route::get( 'products/{product:slug}/toggle_withlist', [ ProductController::clas
 Route::apiResource( 'product/comments', ProductCommentController::class )->parameters( [ 'product/comments' => 'comment' ] );
 Route::put( 'product/comments/{comment}/toggleConfirm', [ ProductCommentController::class, 'toggleConfirm' ] );
 Route::group( [ 'prefix' => 'carts' ], function () {
+	Route::get('/',[CartController::class,'index']);
+	Route::get('/{cart}',[CartController::class,'show']);
 	Route::group( [ 'prefix' => 'currentCart' ], function () {
 		Route::post( 'add', [ CartController::class, 'addToCart' ] );
 		Route::get( '', [ CartController::class, 'currentCart' ] );
@@ -62,7 +64,8 @@ Route::group( [ 'prefix' => 'carts' ], function () {
 
 } );
 Route::group(['prefix'=>'orders'],function (){
-	Route::post('payCart',[\App\Http\Controllers\OrderController::class,'payCart']);
+	Route::get('payCart',[\App\Http\Controllers\OrderController::class,'payCart']);
+	Route::get('checkPayment',[\App\Http\Controllers\OrderController::class,'checkPayment']);
 });
 //--User--//
 Route::apiResource( 'users', UserController::class )->except( 'store' );
