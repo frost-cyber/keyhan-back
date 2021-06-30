@@ -66,6 +66,9 @@ Route::group( [ 'prefix' => 'carts' ], function () {
 Route::group(['prefix'=>'orders'],function (){
 	Route::get('payCart',[\App\Http\Controllers\OrderController::class,'payCart']);
 	Route::get('checkPayment',[\App\Http\Controllers\OrderController::class,'checkPayment']);
+	Route::get('',[\App\Http\Controllers\OrderController::class,'index']);
+	Route::get('/{order}',[\App\Http\Controllers\OrderController::class,'show']);
+	Route::put('/{order}',[\App\Http\Controllers\OrderController::class,'saveChange']);
 });
 //--User--//
 Route::apiResource( 'users', UserController::class )->except( 'store' );

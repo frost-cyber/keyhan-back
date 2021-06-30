@@ -17,7 +17,31 @@ class OrderController extends Controller {
 	public function __construct() {
 		auth()->loginUsingId(1);
 	}
-
+	public function index(Request $request){
+		$orders=Order::query();
+		$with = ( is_array( $request->input( 'with' ) ) ? $request->input( 'with' ) : [ $request->input( 'with' ) ] );
+		if ( $request->has( 'with' ) && ! count( array_diff( $with, Order::ALL_RELATIONS() ) ) ) {
+			$orders->with( $with );
+		}
+		return $orders->get();
+	}
+	public function show(Order $order){
+	return	$order->load(['user','payments','shipments.address','productVariants.product.files','productVariants.attribute']);
+	}
+	public function saveChange(Order $order,Request $request){
+		$request->validate([
+			'tracking_code' => 'size:24',
+			'status' =>'required|in:0,1,2'
+		],[],[
+			'tracking_code' => 'کد رهگیری',
+			'status' => 'وضعیت'
+		]);
+		$order->status = $request->status;
+		$order->save();
+		$order->shipments[0]->tracking_code = $request->tracking_code;
+		$order->shipments[0]->save();
+		return response('change successfully',200);
+	}
 	public function payCart() {
 		$cart = auth()->user()->currentCart();
 		$this->validateCart( $cart );

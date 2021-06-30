@@ -10,7 +10,25 @@ class Order extends Model
     protected $fillable = ['status' , 'order_number'];
 
     use HasFactory;
+	const RELATIONS = [
+		'productVariants',
+		'user',
+		'shipments',
+		'payments',
+	];
 
+	public static function ALL_RELATIONS() {
+		$relations = static::RELATIONS;
+
+		foreach ( ProductVariant::ALL_RELATIONS() as $item ) {
+			$relations[] = 'productVariants.' . $item;
+		}
+		foreach ( User::ALL_RELATIONS() as $item ) {
+			$relations[] = 'user.' . $item;
+		}
+
+		return $relations;
+	}
     public function user(){
         return $this->belongsTo(User::class);
     }
