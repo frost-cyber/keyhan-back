@@ -23,6 +23,9 @@ class OrderController extends Controller {
 		if ( $request->has( 'with' ) && ! count( array_diff( $with, Order::ALL_RELATIONS() ) ) ) {
 			$orders->with( $with );
 		}
+		if($request->has('user')){
+			$orders->where('user_id',(int) $request->input('user'));
+		}
 		return $orders->get();
 	}
 	public function show(Order $order){
