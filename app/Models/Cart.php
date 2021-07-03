@@ -12,6 +12,8 @@ class Cart extends Model
     const RELATIONS = [
         'products',
         'productVariants',
+	    'user',
+	    'address',
     ];
 
     public static function ALL_RELATIONS() {

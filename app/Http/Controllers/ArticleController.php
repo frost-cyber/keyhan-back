@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -118,9 +119,10 @@ class ArticleController extends Controller {
         $article->meta           = $data['meta']??NULL;
         $article->tags           = $data['tags'];
         $article->status         = $data['status'];
+        $article->published_at         = $data['published_at'];
         $article->comments_count = $data['comments_count'] ?? $article->comments_count ?? 0;
         $article->save();
-        $article->categories()->sync( $data['categories']['id'] );
+        $article->categories()->sync( $data['categories'] );
         if ( $data['thumbnail'] ) {
             $article->files()->sync( $data['thumbnail'] ['id'], [ 'default' => true, 'description' => 'Thumbnail', 'number' => 0 ] );
         } else {

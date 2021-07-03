@@ -9,7 +9,22 @@ use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
 class CartController extends Controller {
+	public function index(Request $request){
+		$carts=Cart::query();
 
+		$with = ( is_array( $request->input( 'with' ) ) ? $request->input( 'with' ) : [ $request->input( 'with' ) ] );
+
+		if ( $request->has( 'with' ) && ! count( array_diff( $with, Cart::ALL_RELATIONS() ) ) ) {
+			$carts->with( $with );
+		}
+
+		return $carts->get();
+	}
+	public function show(Cart $cart){
+		return $cart->load([
+			'user','address','productVariants.product.files','productVariants.attribute'
+		]);
+	}
 	public function addToCart( Request $request ) {
 		$request->validate( [
 			'product'         => 'required|integer|min:1|exists:products,id',

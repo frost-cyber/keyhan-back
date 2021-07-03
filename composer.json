@@ -17,6 +17,7 @@
         "laravel/sanctum": "^2.9",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.2",
+        "shetabit/payment": "^4.0",
         "spatie/laravel-permission": "^4.0",
         "tzsk/sms": "^5.1"
     },

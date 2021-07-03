@@ -77,7 +77,9 @@ class User extends Authenticatable {
 	}
 
 	public function currentCart(): Cart {
-		return $this->carts()->where( 'status', 0 )->firstOrCreate();
+		return $this->carts()->where( 'status', 0 )->firstOr(function (){
+			return $this->carts()->create();
+		});
 	}
 
 	public function files() {
@@ -87,6 +89,10 @@ class User extends Authenticatable {
 	public function addresses() {
 		return $this->hasMany( Address::class );
 	}
+
+	public function orders() {
+	    return $this->hasMany(Order::class);
+    }
 
 	public function getAvatarAttribute() {
 		return $this->files[0] ?? [];
