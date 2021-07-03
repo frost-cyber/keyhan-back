@@ -53,14 +53,14 @@ Route::get( 'products/{product:slug}/toggle_withlist', [ ProductController::clas
 Route::apiResource( 'product/comments', ProductCommentController::class )->parameters( [ 'product/comments' => 'comment' ] );
 Route::put( 'product/comments/{comment}/toggleConfirm', [ ProductCommentController::class, 'toggleConfirm' ] );
 Route::group( [ 'prefix' => 'carts' ], function () {
-	Route::get('/',[CartController::class,'index']);
-	Route::get('/{cart}',[CartController::class,'show']);
 	Route::group( [ 'prefix' => 'currentCart' ], function () {
 		Route::post( 'add', [ CartController::class, 'addToCart' ] );
-		Route::get( '', [ CartController::class, 'currentCart' ] );
-		Route::get( '{productvariant:id}', [ CartController::class, 'removeFromCart' ] );
+		Route::get( '/', [ CartController::class, 'currentCart' ] );
+		Route::get( '/{productvariant:id}', [ CartController::class, 'removeFromCart' ] );
 		Route::post( 'setAddress/{address}', [ CartController::class, 'setAddress' ] );
 	} );
+	Route::get('/',[CartController::class,'index']);
+	Route::get('/{cart}',[CartController::class,'show']);
 
 } );
 Route::group(['prefix'=>'orders'],function (){
