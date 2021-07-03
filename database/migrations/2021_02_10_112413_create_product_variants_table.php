@@ -17,12 +17,13 @@ class CreateProductVariantsTable extends Migration {
 			$table->foreignId( 'product_id' );
 			$table->foreignId( 'attribute_id' )->nullable();
 
-			$table->bigInteger( 'purchase_price' )->nullable();
-			$table->bigInteger( 'selling_price' )->nullable();
-			$table->bigInteger( 'discounted_price' )->nullable();
-			$table->bigInteger( 'wholesale_price' )->nullable();
-			$table->bigInteger( 'minimum_wholesale' )->nullable();
-			$table->bigInteger( 'inventory' )->default( 0 );
+			$table->bigInteger( 'purchase_price' )->unsigned()->nullable();
+			$table->bigInteger( 'selling_price' )->unsigned()->nullable();
+			$table->bigInteger( 'discounted_price' )->unsigned()->nullable();
+			$table->bigInteger( 'wholesale_price' )->unsigned()->nullable();
+			$table->bigInteger( 'minimum_wholesale' )->unsigned()->nullable();
+			$table->bigInteger( 'inventory' )->unsigned()->nullable()->default( 0 );
+			$table->bigInteger( 'weight' )->default( 0 );
 			$table->string( 'unit' )->nullable();
 
 			$table->foreign( 'product_id' )->references( 'id' )->on( 'products' )->cascadeOnDelete()->cascadeOnUpdate();
