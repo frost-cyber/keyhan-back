@@ -7,23 +7,15 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         $pages=Page::query();
+        if(request()->has("status")){
+        	$pages->where('status',\request('status'));
+        }
         return $pages->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
            $request->validate([
@@ -36,12 +28,7 @@ class PageController extends Controller
            return  response('create page successfully',200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Page  $page
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Page $page,$slug = null)
     {
         if($slug) {
@@ -50,13 +37,6 @@ class PageController extends Controller
         return $page;
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Page  $page
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Page $page)
     {
         $request->validate([
@@ -69,12 +49,7 @@ class PageController extends Controller
         return response('update successfully',200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Page  $page
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Page $page)
     {
         $page->delete();

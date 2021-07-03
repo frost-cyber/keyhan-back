@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use HasFactory;
+    protected $fillable=[
+    	'name',
+	    'states',
+	    'weight',
+	    'is_free',
+    ];
+    protected $casts=['weight'=>'json','states'=>'json'];
 }

@@ -280,6 +280,7 @@ class ProductController extends Controller {
                 'wholesale_price'   => $variantData['wholesale_price'] ?? NULL,
                 'minimum_wholesale' => $variantData['minimum_wholesale'] ?? NULL,
                 'inventory'         => $variantData['inventory'] ?? NULL,
+                'weight'            => $variantData['weight'] ?? 0,
             ];
 
             if ( $variantData['id'] ?? FALSE ) {

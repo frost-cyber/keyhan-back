@@ -50,6 +50,12 @@ class ProductRequest extends FormRequest {
             'meta'             => 'array',
             'meta.keywords'    => 'required',
             'meta.description' => 'required',
+            'default_image'    => ['required' ,function ($attribute, $value, $fail) {
+                $image = collect($this->input('images'))->firstWhere('id' , '=' , $value);
+                if (!$image || $image['variant_index']){
+                    $fail('عکس پیشفرض مشخص نشده است.');
+                }
+            },]
         ];
 
         if ( $id = $this->route( 'product' )?->id ) {
@@ -84,7 +90,7 @@ class ProductRequest extends FormRequest {
 
     public function productAttributes() {
         return [
-            'attributes'      => 'required|array',
+            'attributes'      => 'required|array|min:1',
             'attributes.*.id' => 'required|integer|min:1',
         ];
     }
@@ -105,7 +111,13 @@ class ProductRequest extends FormRequest {
 
     private function images() {
         return [
-            'images' => 'array|min:1',
+            'images' => ['required','array','min:1',function ($attribute, $value, $fail) {
+                if (collect($this->input('images'))->whereNull('variant_index')->isEmpty()){
+                    $fail('محصول باید حداقل یک عکس داشته باشد.');
+                }
+            }],
+            'images.*.id' => 'required|numeric|min:1',
+            'images.*.variant_index' => ['nullable','numeric','min:0',]
         ];
     }
 
@@ -113,6 +125,7 @@ class ProductRequest extends FormRequest {
         return [
             'variants'                     => 'required|array|min:1' . ( (int) $this->input( 'type' ) !== 2 ? '|max:1' : '' ),
             'variants.*.id'                => 'nullable|integer|min:1',
+            'variants.*.attribute_id'      => ((int)$this->input('type') === 2 ? 'required':'nullable').'|integer|min:1',
             'variants.*.purchase_price'    => 'nullable|integer',
             'variants.*.selling_price'     => 'required|integer',
             'variants.*.discounted_price'  => 'nullable|integer',
@@ -124,7 +137,9 @@ class ProductRequest extends FormRequest {
 
     public function attributes() {
         return [
-            'sku' => 'کد محصول'
+            'sku' => 'کد محصول',
+            'default_image' => 'عکس پیشفرض',
+            'images.*.id' => 'عکس'
         ];
     }
 
