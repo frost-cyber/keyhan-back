@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Payment as PaymentModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\Cart;
@@ -15,47 +16,53 @@ use Shetabit\Payment\Facade\Payment;
 
 class OrderController extends Controller {
 	public function __construct() {
-		auth()->loginUsingId(1);
+		auth()->loginUsingId( 1 );
 	}
-	public function index(Request $request){
-		$orders=Order::query();
-		$with = ( is_array( $request->input( 'with' ) ) ? $request->input( 'with' ) : [ $request->input( 'with' ) ] );
+
+	public function index( Request $request ) {
+		$orders = Order::query();
+		$with   = ( is_array( $request->input( 'with' ) ) ? $request->input( 'with' ) : [ $request->input( 'with' ) ] );
 		if ( $request->has( 'with' ) && ! count( array_diff( $with, Order::ALL_RELATIONS() ) ) ) {
 			$orders->with( $with );
 		}
-		if($request->has('user')){
-			$orders->where('user_id',(int) $request->input('user'));
+		if ( $request->has( 'user' ) ) {
+			$orders->where( 'user_id', (int) $request->input( 'user' ) );
 		}
 		if ( request()->has( 'sort' ) ) {
 			$preg = preg_match( '/^([+-]?)(.*)$/', request( 'sort' ), $match );
 			if ( $preg ) {
-				$op   = $match[1] === '+' ? 'asc' : 'desc';
+				$op     = $match[1] === '+' ? 'asc' : 'desc';
 				$column = $match[2];
-				$orders->orderBy($column,$op);
+				$orders->orderBy( $column, $op );
 			}
 		}
-		if($request->has('paginate')){
-			return $orders->paginate(5);
+		if ( $request->has( 'paginate' ) ) {
+			return $orders->paginate( 5 );
 		}
+
 		return $orders->get();
 	}
-	public function show(Order $order){
-	return	$order->load(['user','payments','shipments.address','productVariants.product.files','productVariants.attribute']);
+
+	public function show( Order $order ) {
+		return $order->load( [ 'user', 'payments', 'shipments.address', 'productVariants.product.files', 'productVariants.attribute' ] );
 	}
-	public function saveChange(Order $order,Request $request){
-		$request->validate([
+
+	public function saveChange( Order $order, Request $request ) {
+		$request->validate( [
 			'tracking_code' => 'size:24',
-			'status' =>'required|in:0,1,2'
-		],[],[
+			'status'        => 'required|in:0,1,2',
+		], [], [
 			'tracking_code' => 'کد رهگیری',
-			'status' => 'وضعیت'
-		]);
+			'status'        => 'وضعیت',
+		] );
 		$order->status = $request->status;
 		$order->save();
 		$order->shipments[0]->tracking_code = $request->tracking_code;
 		$order->shipments[0]->save();
-		return response('change successfully',200);
+
+		return response( 'change successfully', 200 );
 	}
+
 	public function payCart() {
 		$cart = auth()->user()->currentCart();
 		$this->validateCart( $cart );
@@ -64,20 +71,19 @@ class OrderController extends Controller {
 		] );
 
 		$this->orderAttachVariants( $order, $cart );
-		$shipment = new Shipment( [
-			'status'     => 'درحال ارسال',
-			'address_id' => 1,
-		] );
-		$shipment->address()->associate( 1 );
-		$order->shipments()->save( $shipment );
+		$order->shipments()->create( [
+			'status'     => '-',
+			'address_id' => $cart->address_id,
+		]  );
 		$pay = $this->pay( $order->total_price );
 		$order->payments()->create( [
 			'gateway' => 'زرین پال',
-			'status'  => 'پرداخت نشده',
-			'amount'   => $order->total_price,
+			'status'  => PaymentModel::STATUS_PAY_PENDING,
+			'amount'  => $order->total_price,
 			'data'    => [ 'authority' => $pay['transactionId'] ],
 		] );
-//		$cart->delete();
+
+		$cart->delete();
 
 		return $pay['redirectForm']->toJson();
 	}
@@ -141,28 +147,26 @@ class OrderController extends Controller {
 		];
 	}
 
-	public function checkPayment(Request $request){
-		$payment=PaymentModel::query()->whereJsonContains('data->authority',$request->authority)->firstOrFail();
-		if($request->input('status') == 'NOK'){
+	public function checkPayment( Request $request ) {
+		$payment = PaymentModel::query()->whereJsonContains( 'data->authority', $request->Authority )->firstOrFail();
+		try {
+			$receipt = Payment::amount( (int) $payment->amount )->transactionId( $request->authority )->verify();
+			$payment->update( [
+				'status' => PaymentModel::STATUS_PAYED,
+				'data'   => array_merge( $payment->data, [
+					'referenceId' => $receipt->getReferenceId(),
+					'date'        => $receipt->getDate(),
+				]),
+			] );
 
-		}
-		if ($request->input('status') == 'OK'){
-			try{
-//				$responce=\Http::withHeaders([
-//					'accept' => 'application/json',
-//					'content-type' => 'application/json'
-//				])->post('https://sandbox.zarinpal.com/pg/v4/payment/verify.json',[
-//					"merchant_id"=> "753869421753869421753869421123456789",
-//					'amount'=> $payment->amount,
-//					'authority'=>$request->authority,
-//				]);
-//				dd($responce->body());
-//				dd(Payment::amount((int)$payment->amount)->transactionId($request->authority));
-				$receipt =Payment::amount((int)$payment->amount)->transactionId($request->authority)->verify();
-				dd($receipt);
-			}catch (InvalidPaymentException $exception ){
-					dd($exception);
+			return response('پرداخت شده است',200);
+		} catch ( InvalidPaymentException $exception ) {
+			if($exception->getCode() ===101){
+				return response('قبلا پرداخت شده است',201);
 			}
+			$payment->update( [ 'status' => PaymentModel::STATUS_PAY_CANCELED ] );
+			return response([$exception->getCode(),$exception->getMessage()],400);
 		}
+
 	}
 }
