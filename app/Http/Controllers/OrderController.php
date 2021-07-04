@@ -26,6 +26,17 @@ class OrderController extends Controller {
 		if($request->has('user')){
 			$orders->where('user_id',(int) $request->input('user'));
 		}
+		if ( request()->has( 'sort' ) ) {
+			$preg = preg_match( '/^([+-]?)(.*)$/', request( 'sort' ), $match );
+			if ( $preg ) {
+				$op   = $match[1] === '+' ? 'asc' : 'desc';
+				$column = $match[2];
+				$orders->orderBy($column,$op);
+			}
+		}
+		if($request->has('paginate')){
+			return $orders->paginate(5);
+		}
 		return $orders->get();
 	}
 	public function show(Order $order){
