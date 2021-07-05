@@ -59,24 +59,24 @@ Route::group( [ 'prefix' => 'carts' ], function () {
 		Route::get( '/{productvariant:id}', [ CartController::class, 'removeFromCart' ] );
 		Route::post( 'setAddress/{address}', [ CartController::class, 'setAddress' ] );
 	} );
-	Route::get('/',[CartController::class,'index']);
-	Route::get('/{cart}',[CartController::class,'show']);
+	Route::get( '/', [ CartController::class, 'index' ] );
+	Route::get( '/{cart}', [ CartController::class, 'show' ] );
 
 } );
-Route::group(['prefix'=>'orders'],function (){
-	Route::get('',[\App\Http\Controllers\OrderController::class,'index']);
-	Route::post('/{order}',[\App\Http\Controllers\OrderController::class,'show'])->whereNumber('order');
-	Route::put('/{order}',[\App\Http\Controllers\OrderController::class,'saveChange']);
-	Route::get('payCart',[\App\Http\Controllers\OrderController::class,'payCart']);
-	Route::get('checkPayment',[\App\Http\Controllers\OrderController::class,'checkPayment']);
+Route::group( [ 'prefix' => 'orders' ], function () {
+	Route::get( '', [ \App\Http\Controllers\OrderController::class, 'index' ] );
+	Route::get( '/{order}', [ \App\Http\Controllers\OrderController::class, 'show' ] )->whereNumber( 'order' );
+	Route::put( '/{order}', [ \App\Http\Controllers\OrderController::class, 'saveChange' ] );
+	Route::get( 'payCart', [ \App\Http\Controllers\OrderController::class, 'payCart' ] );
+	Route::get( 'checkPayment', [ \App\Http\Controllers\OrderController::class, 'checkPayment' ] );
 
-});
+} );
 //--User--//
 Route::apiResource( 'users', UserController::class )->except( 'store' );
 //--admin--//
 Route::apiResource( 'admins', AdminController::class )->parameters( [ 'admins' => 'user' ] );
 //--post--//
-Route::apiResource('posts',\App\Http\Controllers\PostController::class);
+Route::apiResource( 'posts', \App\Http\Controllers\PostController::class );
 //-- Blog --//
 Route::apiResource( 'articles', ArticleController::class )->whereNumber( 'article' );
 Route::get( 'articles/{slug}', [ ArticleController::class, 'show' ] );
@@ -98,7 +98,6 @@ Route::group( [ 'prefix' => 'profile/' ], function () {
 		Route::put( '/{address}', [ AddressController::class, 'update' ] );
 	} );
 	Route::get( 'wishlist', [ WishlistController::class, 'index' ] );
-	Route::get( 'lastWishlist', [ WishlistController::class, 'lastWishlist' ] );
 
 } );
 // Forms //

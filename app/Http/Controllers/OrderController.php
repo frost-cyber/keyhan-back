@@ -21,13 +21,17 @@ class OrderController extends Controller {
 
 	public function index( Request $request ) {
 		$orders = Order::query();
+
 		$with   = ( is_array( $request->input( 'with' ) ) ? $request->input( 'with' ) : [ $request->input( 'with' ) ] );
-		if ( $request->has( 'with' ) && ! count( array_diff( $with, Order::ALL_RELATIONS() ) ) ) {
+
+		if ( $request->has( 'with' )  ) {
 			$orders->with( $with );
 		}
+
 		if ( $request->has( 'user' ) ) {
 			$orders->where( 'user_id', (int) $request->input( 'user' ) );
 		}
+
 		if ( request()->has( 'sort' ) ) {
 			$preg = preg_match( '/^([+-]?)(.*)$/', request( 'sort' ), $match );
 			if ( $preg ) {
@@ -36,8 +40,9 @@ class OrderController extends Controller {
 				$orders->orderBy( $column, $op );
 			}
 		}
+
 		if ( $request->has( 'paginate' ) ) {
-			return $orders->paginate( 5 );
+			return $orders->paginate( (int)$request->input('paginate') ?:5 );
 		}
 
 		return $orders->get();
@@ -74,7 +79,7 @@ class OrderController extends Controller {
 		$order->shipments()->create( [
 			'status'     => '-',
 			'address_id' => $cart->address_id,
-		]  );
+		] );
 		$pay = $this->pay( $order->total_price );
 		$order->payments()->create( [
 			'gateway' => 'زرین پال',
@@ -156,17 +161,19 @@ class OrderController extends Controller {
 				'data'   => array_merge( $payment->data, [
 					'referenceId' => $receipt->getReferenceId(),
 					'date'        => $receipt->getDate(),
-				]),
+				] ),
 			] );
 
-			return response('پرداخت شده است',200);
+			return response( 'پرداخت شده است', 200 );
 		} catch ( InvalidPaymentException $exception ) {
-			if($exception->getCode() ===101){
-				return response('قبلا پرداخت شده است',201);
+			if ( $exception->getCode() === 101 ) {
+				return response( 'قبلا پرداخت شده است', 201 );
 			}
 			$payment->update( [ 'status' => PaymentModel::STATUS_PAY_CANCELED ] );
-			return response([$exception->getCode(),$exception->getMessage()],400);
+
+			return response( [ $exception->getCode(), $exception->getMessage() ], 400 );
 		}
 
 	}
+
 }
