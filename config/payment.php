@@ -204,7 +204,7 @@ return [
 
             'mode' => 'sandbox', // can be normal, , zaringate
             'merchantId' => '753869421753869421753869421123456789',
-            'callbackUrl' => 'http://server.keyhan.p/verify',
+            'callbackUrl' => 'http://keyhan.p/profile/orders',
             'description' => 'payment using zarinpal',
         ],
         'zibal' => [

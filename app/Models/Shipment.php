@@ -9,7 +9,7 @@ class Shipment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['status' , 'tracking_code' , 'shipments_date'];
+    protected $fillable = ['status' , 'tracking_code' , 'shipments_date','address_id'];
     protected $casts = [
         'shipments_date' => 'timestamp'
     ];
