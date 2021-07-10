@@ -29,7 +29,7 @@ class Product extends Model {
     }
 
     public function attributes() {
-        $pivots = [ 'group_name', 'number' ];
+        $pivots = [ 'group_name', 'number' , 'value' ];
 
         return $this->belongsToMany( Attribute::class, 'product_attribute' )->withPivot( $pivots );
     }

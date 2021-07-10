@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed extra_data
  * @property string name
  * @property boolean is_variable
- * @property int type //only [ 1 , 2 , 3 ]
+ * @property int type //only [ 1 , 2 , 3 , 4 ]
  */
 class Attribute extends Model
 {
@@ -20,6 +20,7 @@ class Attribute extends Model
     const TYPE_SIMPLE = 1;
     const TYPE_COLOR = 2;
     const TYPE_UNIT = 3;
+    const TYPE_CUSTOM = 4;
 
     public $timestamps = FALSE;
     protected $appends = ['code' , 'unit'];
