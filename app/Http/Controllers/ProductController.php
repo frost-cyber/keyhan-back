@@ -254,7 +254,7 @@ class ProductController extends Controller {
             $syncData[ $attribute['id'] ] = [
                 'group_name' => $attribute['group_name'] ?? NULL,
                 'number'     => $i,
-                'value'      => $attribute['value']
+                'value'      => $attribute['value'] ?? null
             ];
         }
 

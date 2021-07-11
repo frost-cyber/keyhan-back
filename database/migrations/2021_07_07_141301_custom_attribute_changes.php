@@ -14,7 +14,7 @@ class CustomAttributeChanges extends Migration
     public function up()
     {
         Schema::table('product_attribute' , function(Blueprint $table){
-            $table->tinyText('value')->nullable()->after('number');
+            $table->mediumText('value')->nullable()->after('number');
         });
     }
 
