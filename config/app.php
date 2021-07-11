@@ -166,10 +166,11 @@ return [
          * Package Service Providers...
          */
         Spatie\Permission\PermissionServiceProvider::class,
+	    Shetabit\Payment\Provider\PaymentServiceProvider::class,
 
-        /*
-         * Application Service Providers...
-         */
+	    /*
+		 * Application Service Providers...
+		 */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
@@ -227,7 +228,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Payment' => Shetabit\Payment\Facade\Payment::class,
     ],
 
 ];

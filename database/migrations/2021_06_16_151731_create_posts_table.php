@@ -16,11 +16,9 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->json('cities');
-            $table->json('states');
-            $table->integer('start_price')->unsigned()->nullable();
-            $table->integer('price_per_kilo')->unsigned()->nullable();
-            $table->boolean('is_free')->default(0);
+            $table->json('weight');
+            $table->json('states')->nullable();
+            $table->integer('is_free')->nullable();
             $table->timestamps();
         });
     }

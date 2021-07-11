@@ -12,16 +12,16 @@ class WishlistController extends Controller
         $query = auth()->user()->productsWishlist()->with(['files', 'variants']);
 
         if ($request->has('products')) {
-            $query = $query->where('is_virtual', false);
+             $query->where('is_virtual', false);
         } else if ($request->has('courses')) {
-            $query = $query->where('is_virtual', true);
+             $query->where('is_virtual', true);
+        }
+        if($request->has('limit')){
+        	$query->limit($request->input('limit'));
         }
 
         return $query->get();
 
-    }
-    public function lastWishlist(Request $request){
-     return auth()->user()->productsWishlist()->limit(3)->with(['files','variants'])->get();
     }
 
 }

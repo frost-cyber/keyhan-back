@@ -95,6 +95,9 @@ class AttributeController extends Controller
                 $attribute->value = $data['value'];
                 $attribute->unit = $data['unit'];
                 break;
+            case Attribute::TYPE_CUSTOM:
+                $attribute->value = ' ';
+                break;
         }
         $attribute->save();
 

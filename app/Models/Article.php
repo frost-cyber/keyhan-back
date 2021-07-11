@@ -26,11 +26,11 @@ class Article extends Model
         'comments_count',
         'description',
         'visit_count',
-        'publish_at',
+        'published_at',
         'category_id',
         'condition'
     ];
-    protected $casts=['tags'=>'array','meta'=>'json'];
+    protected $casts=['tags'=>'array','meta'=>'json','published_at'=>'timestamp'];
     protected $table = 'articles';
 
 	public static function ALL_RELATIONS() {

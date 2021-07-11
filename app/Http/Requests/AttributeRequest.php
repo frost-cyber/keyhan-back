@@ -6,16 +6,14 @@ use App\Models\Attribute;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class AttributeRequest extends FormRequest
-{
+class AttributeRequest extends FormRequest {
 
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return TRUE;
     }
 
@@ -24,34 +22,38 @@ class AttributeRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         $roles = [
-            'name'        => 'required|min:2' ,
-            'is_variable' => 'required|boolean' ,
+            'name'        => 'required|min:2',
+            'is_variable' => 'required|boolean',
         ];
 
-        if($this->has('routeCreate')){
-           $roles['name'] = '|unique:attributes';
+        if ( $this->has( 'routeCreate' ) ) {
+            $roles['name'] .= '|unique:attributes';
         }
 
         $roles['type'] = [
-            'required' ,
-            Rule::in([Attribute::TYPE_SIMPLE , Attribute::TYPE_COLOR , Attribute::TYPE_UNIT]) ,
+            'required',
+            Rule::in( [ Attribute::TYPE_SIMPLE, Attribute::TYPE_COLOR, Attribute::TYPE_UNIT, Attribute::TYPE_CUSTOM ] ),
         ];
 
-        if ($this->has('type')) {
-            switch ($this->input('type')) {
+        if ( $this->has( 'type' ) ) {
+            switch ( $this->input( 'type' ) ) {
                 case Attribute::TYPE_SIMPLE:
                     $roles['value'] = 'required|min:2';
                     break;
                 case Attribute::TYPE_COLOR:
                     $roles['value'] = 'required|min:2|alpha';
-                    $roles['code'] = 'required|min:2';
+                    $roles['code']  = 'required|min:2';
                     break;
                 case Attribute::TYPE_UNIT:
                     $roles['value'] = 'required|min:2';
-                    $roles['unit'] = 'required|min:2';
+                    $roles['unit']  = 'required|min:2';
+                    break;
+                case Attribute::TYPE_CUSTOM:
+                    if ( $roles['name'] === 'required|boolean' ) {
+                        $roles['name'] .= '|unique:attributes';
+                    }
                     break;
             }
         }
@@ -59,14 +61,13 @@ class AttributeRequest extends FormRequest
         return $roles;
     }
 
-    public function attributes()
-    {
+    public function attributes() {
         $attributes = [
-            'code'  => 'کد رنگ' ,
-            'unit' => 'واحد' ,
+            'code' => 'کد رنگ',
+            'unit' => 'واحد',
         ];
-        if ($this->has('type')) {
-            switch ($this->input('type')) {
+        if ( $this->has( 'type' ) ) {
+            switch ( $this->input( 'type' ) ) {
                 case Attribute::TYPE_UNIT:
                 case Attribute::TYPE_SIMPLE:
                     $attributes['value'] = 'مقدار';
@@ -76,6 +77,7 @@ class AttributeRequest extends FormRequest
                     break;
             }
         }
+
         return $attributes;
     }
 }

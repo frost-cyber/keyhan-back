@@ -24,7 +24,7 @@ class CreateArticlesTable extends Migration
             $table->json('meta');
             $table->integer('comments_count')->default(0);
             $table->integer('visit_count')->default(0);
-            $table->timestamp('publish_at')->nullable();
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

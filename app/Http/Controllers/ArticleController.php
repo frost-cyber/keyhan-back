@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -40,7 +41,9 @@ class ArticleController extends Controller {
             $sort = request('sort');
             $articles = $articles->orderBy(substr($sort , 1) , str_starts_with($sort , '+') ? 'asc' : 'desc');
         }
-
+		if (request()->has('status')){
+			$articles->where('status',request('status'));
+		}
         if ( $request->has( 'pagination' ) ) {
             $articles = $articles->paginate( '4' );
         } else {
@@ -70,7 +73,7 @@ class ArticleController extends Controller {
     }
 
     public function show( Article $article, $slug = null ) {
-        $article = ! $slug ? $article : Article::where( 'slug', $slug )->where( 'status', 'active' )->first();
+        $article = ! $slug ? $article : Article::where( 'slug', $slug )->where( 'status', 'active' )->firstOrFail();
 
         return $article->load( [
             'comments' => function ( $query ) {
@@ -116,9 +119,10 @@ class ArticleController extends Controller {
         $article->meta           = $data['meta']??NULL;
         $article->tags           = $data['tags'];
         $article->status         = $data['status'];
+        $article->published_at         = $data['published_at'];
         $article->comments_count = $data['comments_count'] ?? $article->comments_count ?? 0;
         $article->save();
-        $article->categories()->sync( $data['categories']['id'] );
+        $article->categories()->sync( $data['categories'] );
         if ( $data['thumbnail'] ) {
             $article->files()->sync( $data['thumbnail'] ['id'], [ 'default' => true, 'description' => 'Thumbnail', 'number' => 0 ] );
         } else {
