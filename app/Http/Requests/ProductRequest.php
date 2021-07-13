@@ -52,7 +52,7 @@ class ProductRequest extends FormRequest {
             'meta.description' => 'required',
             'default_image'    => ['required' ,function ($attribute, $value, $fail) {
                 $image = collect($this->input('images'))->firstWhere('id' , '=' , $value);
-                if (!$image || $image['variant_index']){
+                if (!$image || (isset($image['variant_index'] ) && $image['variant_index']>=0)){
                     $fail('عکس پیشفرض مشخص نشده است.');
                 }
             },]
